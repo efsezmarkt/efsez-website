@@ -48,18 +48,28 @@ function ImagePreview({ src, label }) {
 }
 
 function ImageUploadField({ label, value, uploading, onUpload }) {
+  const hasUploadedImage = value?.startsWith("http");
+
   return (
     <div className="upload-field">
-      <label>
-        <span>{label}</span>
+      <label className={uploading ? "upload-dropzone is-uploading" : "upload-dropzone"}>
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp,image/gif"
           disabled={uploading}
-          onChange={(event) => onUpload(event.target.files?.[0] || null)}
+          onChange={(event) => {
+            onUpload(event.target.files?.[0] || null);
+            event.target.value = "";
+          }}
         />
+        <span className="upload-icon" aria-hidden="true">+</span>
+        <span className="upload-copy">
+          <strong>{label}</strong>
+          <small>{uploading ? "Bitte kurz warten" : "JPG, PNG, WebP oder GIF bis 8 MB"}</small>
+        </span>
+        <span className="upload-action">{hasUploadedImage ? "Austauschen" : "Auswahlen"}</span>
       </label>
-      {value && <small>{value.startsWith("http") ? "Hochgeladenes Bild" : "Standardbild"}</small>}
+      {value && <small className="upload-status">{hasUploadedImage ? "Hochgeladenes Bild bereit" : "Standardbild aktiv"}</small>}
     </div>
   );
 }

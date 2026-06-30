@@ -98,28 +98,102 @@
   gap: 8px;
 }
 
-.upload-field label {
+.upload-dropzone {
+  position: relative;
   display: grid;
-  gap: 8px;
-  padding: 14px;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 86px;
+  padding: 16px;
   border: 1px dashed #b8cdb6;
   border-radius: 6px;
   background: #f8faf7;
   color: var(--primary-green);
-  font-weight: 900;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.upload-dropzone:hover {
+  border-color: var(--primary-green);
+  background: #eef6ec;
+}
+
+.upload-dropzone:focus-within {
+  outline: 3px solid rgba(13, 92, 58, 0.18);
+  border-color: var(--primary-green);
+}
+
+.upload-dropzone.is-uploading {
+  cursor: progress;
+  opacity: 0.78;
+}
+
+.upload-dropzone input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   cursor: pointer;
 }
 
-.upload-field input {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+.upload-dropzone input:disabled {
+  cursor: progress;
 }
 
-.upload-field small {
+.upload-icon,
+.upload-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary-green);
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.upload-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.upload-copy strong {
+  font-weight: 900;
+}
+
+.upload-copy small,
+.upload-status {
   color: #52645a;
   font-weight: 700;
+}
+
+.upload-action {
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 6px;
+  background: #e8eee5;
+  color: var(--primary-green);
+  font-weight: 900;
+}
+
+@media (max-width: 520px) {
+  .upload-dropzone {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .upload-action {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
 }
 
 .check-row,
