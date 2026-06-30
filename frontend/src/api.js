@@ -25,5 +25,6 @@ export const api = {
   deleteProduct: (id, token) => request(`/products/${id}`, { method: "DELETE", token }),
   getOffers: () => request("/offers"),
   createOffer: (offer, token) => request("/offers", { method: "POST", body: offer, token }),
+  updateOffer: (id, offer, token) => request(`/offers/${id}`, { method: "PUT", body: offer, token }),
   deleteOffer: (id, token) => request(`/offers/${id}`, { method: "DELETE", token })
 };

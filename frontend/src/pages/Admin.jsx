@@ -28,11 +28,23 @@ const emptyOffer = {
   active: true
 };
 
+function ImagePreview({ src, label }) {
+  if (!src) return null;
+
+  return (
+    <div className="image-preview">
+      <span>{label}</span>
+      <img src={src} alt="" loading="lazy" />
+    </div>
+  );
+}
+
 function Admin({ products, offers, onRefresh }) {
   const [token, setToken] = useState(localStorage.getItem("efsez-admin-token") || "");
   const [productForm, setProductForm] = useState(emptyProduct);
   const [offerForm, setOfferForm] = useState(emptyOffer);
   const [editingId, setEditingId] = useState(null);
+  const [editingOfferId, setEditingOfferId] = useState(null);
   const [message, setMessage] = useState("");
 
   const categories = useMemo(
@@ -75,10 +87,15 @@ function Admin({ products, offers, onRefresh }) {
     event.preventDefault();
     setMessage("");
     try {
-      await api.createOffer(offerForm, token);
+      if (editingOfferId) {
+        await api.updateOffer(editingOfferId, offerForm, token);
+      } else {
+        await api.createOffer(offerForm, token);
+      }
       setOfferForm(emptyOffer);
+      setEditingOfferId(null);
       await onRefresh();
-      setMessage("Angebot veroffentlicht.");
+      setMessage(editingOfferId ? "Angebot aktualisiert." : "Angebot veroffentlicht.");
     } catch (error) {
       setMessage(error.message);
     }
@@ -125,6 +142,24 @@ function Admin({ products, offers, onRefresh }) {
     });
   }
 
+  function editOffer(offer) {
+    setEditingOfferId(offer.id);
+    setOfferForm({
+      title: offer.title || "",
+      description: offer.description || "",
+      price: offer.price || "",
+      image: offer.image || "",
+      starts_at: offer.starts_at || "",
+      ends_at: offer.ends_at || "",
+      active: offer.active
+    });
+  }
+
+  function resetOfferForm() {
+    setEditingOfferId(null);
+    setOfferForm(emptyOffer);
+  }
+
   return (
     <section id="admin" className="admin-section">
       <div className="admin-header">
@@ -165,6 +200,7 @@ function Admin({ products, offers, onRefresh }) {
           </datalist>
 
           <input required placeholder="Bildpfad oder Bild-URL" value={productForm.image} onChange={(event) => updateProductField("image", event.target.value)} />
+          <ImagePreview src={productForm.image} label="Produktbild Vorschau" />
           <textarea required placeholder="Kurze Beschreibung fur Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
           <textarea placeholder="Produktinformationen fur Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
 
@@ -188,17 +224,19 @@ function Admin({ products, offers, onRefresh }) {
         </form>
 
         <form className="admin-panel" onSubmit={submitOffer}>
-          <h3>Angebot hochladen</h3>
+          <h3>{editingOfferId ? "Angebot bearbeiten" : "Angebot hochladen"}</h3>
           <input required placeholder="Titel" value={offerForm.title} onChange={(event) => updateOfferField("title", event.target.value)} />
           <input placeholder="Preis, z. B. 1,99 EUR" value={offerForm.price} onChange={(event) => updateOfferField("price", event.target.value)} />
           <input placeholder="Bildpfad oder Bild-URL" value={offerForm.image} onChange={(event) => updateOfferField("image", event.target.value)} />
+          <ImagePreview src={offerForm.image} label="Angebotsbild Vorschau" />
           <div className="date-row">
             <input type="date" value={offerForm.starts_at} onChange={(event) => updateOfferField("starts_at", event.target.value)} />
             <input type="date" value={offerForm.ends_at} onChange={(event) => updateOfferField("ends_at", event.target.value)} />
           </div>
           <textarea required placeholder="Beschreibung" value={offerForm.description} onChange={(event) => updateOfferField("description", event.target.value)} />
           <label className="single-check"><input type="checkbox" checked={offerForm.active} onChange={(event) => updateOfferField("active", event.target.checked)} /> Aktiv anzeigen</label>
-          <button type="submit">Angebot veroffentlichen</button>
+          <button type="submit">{editingOfferId ? "Angebot aktualisieren" : "Angebot veroffentlichen"}</button>
+          {editingOfferId && <button type="button" className="ghost-button" onClick={resetOfferForm}>Abbrechen</button>}
         </form>
       </div>
 
@@ -222,6 +260,7 @@ function Admin({ products, offers, onRefresh }) {
             <div className="admin-list-row" key={offer.id}>
               <span>{offer.title}</span>
               <div>
+                <button type="button" onClick={() => editOffer(offer)}>Bearbeiten</button>
                 <button type="button" onClick={() => removeOffer(offer.id)}>Loschen</button>
               </div>
             </div>
