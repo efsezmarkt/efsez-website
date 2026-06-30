@@ -1,0 +1,168 @@
+.admin-section {
+  padding: 130px 50px 90px;
+  background: #f3f7f1;
+}
+
+.admin-header {
+  max-width: 1180px;
+  margin: 0 auto 30px;
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  gap: 24px;
+  align-items: end;
+}
+
+.admin-kicker {
+  color: var(--accent-orange);
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.admin-header h2 {
+  color: var(--primary-green);
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
+
+.token-field,
+.admin-panel,
+.admin-list {
+  background: #ffffff;
+  border: 1px solid rgba(13, 92, 58, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+.token-field {
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  color: var(--primary-green);
+  font-weight: 800;
+}
+
+.admin-grid,
+.admin-lists {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.admin-panel {
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.admin-panel h3,
+.admin-list h3 {
+  color: var(--primary-green);
+}
+
+.admin-panel input,
+.admin-panel textarea,
+.token-field input {
+  width: 100%;
+  border: 1px solid #d9e2d4;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 1rem;
+}
+
+.admin-panel textarea {
+  min-height: 118px;
+  resize: vertical;
+}
+
+.check-row,
+.date-row,
+.admin-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.check-row label,
+.single-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #344;
+  font-weight: 700;
+}
+
+.check-row input,
+.single-check input {
+  width: auto;
+}
+
+.admin-panel button,
+.admin-list-row button {
+  border: 0;
+  border-radius: 6px;
+  padding: 11px 14px;
+  background: var(--primary-green);
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-panel .ghost-button {
+  background: #e8eee5;
+  color: var(--primary-green);
+}
+
+.admin-message {
+  max-width: 1180px;
+  margin: 0 auto 24px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--primary-green);
+  font-weight: 800;
+}
+
+.admin-lists {
+  margin-top: 24px;
+}
+
+.admin-list {
+  padding: 20px;
+}
+
+.admin-list-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #edf1ea;
+}
+
+.admin-list-row span {
+  font-weight: 800;
+  color: #24342c;
+}
+
+.admin-list-row div {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 820px) {
+  .admin-section {
+    padding: 70px 20px;
+  }
+
+  .admin-header,
+  .admin-grid,
+  .admin-lists,
+  .check-row,
+  .date-row,
+  .admin-field-grid {
+    grid-template-columns: 1fr;
+  }
+}
