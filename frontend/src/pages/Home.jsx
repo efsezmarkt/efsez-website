@@ -62,7 +62,7 @@ function Home({ products, offers }) {
 
           <div className="hero-visual">
             <div className="hero-logo-card">
-              <img src="/src/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
+              <img src="/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
             </div>
           </div>
         </div>

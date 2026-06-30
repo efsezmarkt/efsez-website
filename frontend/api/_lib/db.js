@@ -99,9 +99,15 @@ export function parseBody(req) {
   return req.body;
 }
 
+export function publicAssetPath(path) {
+  if (!path) return "";
+  return path.replace(/^\/src\/assets\//, "/assets/");
+}
+
 export function normalizeProduct(product) {
   return {
     ...product,
+    image: publicAssetPath(product.image),
     featured: Boolean(product.featured),
     available: Boolean(product.available)
   };
@@ -110,6 +116,7 @@ export function normalizeProduct(product) {
 export function normalizeOffer(offer) {
   return {
     ...offer,
+    image: publicAssetPath(offer.image),
     active: Boolean(offer.active)
   };
 }

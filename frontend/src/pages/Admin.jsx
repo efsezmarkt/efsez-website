@@ -13,7 +13,7 @@ const emptyProduct = {
   allergens: "",
   barcode: "",
   tags: "",
-  image: "/src/assets/products/caykur-rize-tee.png",
+  image: "/assets/products/caykur-rize-tee.png",
   featured: false,
   available: true
 };
@@ -22,7 +22,7 @@ const emptyOffer = {
   title: "",
   description: "",
   price: "",
-  image: "/src/assets/hero.png",
+  image: "/assets/hero.png",
   starts_at: "",
   ends_at: "",
   active: true

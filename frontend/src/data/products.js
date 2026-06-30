@@ -5,7 +5,7 @@ export const products = [
     category: "Getranke",
     brand: "Caykur",
     description: "Traditioneller turkischer Schwarztee fur den klassischen Cay-Genuss.",
-    image: "/src/assets/products/caykur-rize-tee.png",
+    image: "/assets/products/caykur-rize-tee.png",
     featured: true,
     available: true
   },
@@ -15,7 +15,7 @@ export const products = [
     category: "Fleischwaren",
     brand: "Efepasa",
     description: "Wurzige turkische Knoblauchwurst, ideal zum Braten, Fruhstuck oder Grillen.",
-    image: "/src/assets/products/efepasa-sucuk.png",
+    image: "/assets/products/efepasa-sucuk.png",
     featured: true,
     available: true
   },
@@ -25,7 +25,7 @@ export const products = [
     category: "Susswaren",
     brand: "Hausgemacht",
     description: "Traditionelles Geback mit feinen Pistazien und dunnen Teigschichten.",
-    image: "/src/assets/products/baklava-pistazie.png",
+    image: "/assets/products/baklava-pistazie.png",
     featured: true,
     available: true
   },
@@ -35,7 +35,7 @@ export const products = [
     category: "Konserven",
     brand: "Sera",
     description: "Eingelegte grune Oliven nach turkischer Art, aromatisch und mild.",
-    image: "/src/assets/products/sera-gruene-oliven.png",
+    image: "/assets/products/sera-gruene-oliven.png",
     featured: false,
     available: true
   },
@@ -45,7 +45,7 @@ export const products = [
     category: "Gewurze",
     brand: "Bagdat",
     description: "Turkische Chiliflocken, scharf und aromatisch fur viele Gerichte.",
-    image: "/src/assets/products/bagdat-pul-biber.png",
+    image: "/assets/products/bagdat-pul-biber.png",
     featured: true,
     available: true
   },
@@ -55,7 +55,7 @@ export const products = [
     category: "Milchprodukte",
     brand: "Yayla",
     description: "Erfrischendes Joghurtgetrank, passend zu warmen Speisen oder unterwegs.",
-    image: "/src/assets/products/yayla-ayran.png",
+    image: "/assets/products/yayla-ayran.png",
     featured: true,
     available: true
   },
@@ -65,7 +65,7 @@ export const products = [
     category: "Fruhstuck",
     brand: "Koska",
     description: "Fein gemahlene Sesampaste, ideal fur Fruhstuck und Sussspeisen.",
-    image: "/src/assets/products/koska-tahin.png",
+    image: "/assets/products/koska-tahin.png",
     featured: false,
     available: true
   },
@@ -75,7 +75,7 @@ export const products = [
     category: "Fruhstuck",
     brand: "Koska",
     description: "Traditioneller Traubensirup, suss und naturlich im Geschmack.",
-    image: "/src/assets/products/koska-pekmez.png",
+    image: "/assets/products/koska-pekmez.png",
     featured: false,
     available: true
   },
@@ -85,7 +85,7 @@ export const products = [
     category: "Nudeln & Reis",
     brand: "Duru",
     description: "Klassischer Bulgur fur turkische Gerichte, Salate und Beilagen.",
-    image: "/src/assets/products/duru-bulgur.png",
+    image: "/assets/products/duru-bulgur.png",
     featured: false,
     available: true
   }
