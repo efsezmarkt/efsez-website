@@ -78,6 +78,7 @@ function Admin({ products, offers, onRefresh }) {
   const [token, setToken] = useState(localStorage.getItem("efsez-admin-token") || "");
   const [productForm, setProductForm] = useState(emptyProduct);
   const [offerForm, setOfferForm] = useState(emptyOffer);
+  const [activeForm, setActiveForm] = useState("product");
   const [editingId, setEditingId] = useState(null);
   const [editingOfferId, setEditingOfferId] = useState(null);
   const [message, setMessage] = useState("");
@@ -217,6 +218,7 @@ function Admin({ products, offers, onRefresh }) {
   }
 
   function editProduct(product) {
+    setActiveForm("product");
     setEditingId(product.id);
     setProductForm({
       name: product.name || "",
@@ -237,6 +239,7 @@ function Admin({ products, offers, onRefresh }) {
   }
 
   function editOffer(offer) {
+    setActiveForm("offer");
     setEditingOfferId(offer.id);
     setOfferForm({
       title: offer.title || "",
@@ -277,7 +280,29 @@ function Admin({ products, offers, onRefresh }) {
 
       {message && <div className="admin-message">{message}</div>}
 
-      <div className="admin-grid">
+      <div className="admin-form-switch" role="tablist" aria-label="Admin Formular">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeForm === "product"}
+          className={activeForm === "product" ? "active" : ""}
+          onClick={() => setActiveForm("product")}
+        >
+          Produkt
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeForm === "offer"}
+          className={activeForm === "offer" ? "active" : ""}
+          onClick={() => setActiveForm("offer")}
+        >
+          Angebot
+        </button>
+      </div>
+
+      <div className="admin-form-area">
+        {activeForm === "product" && (
         <form className="admin-panel" onSubmit={submitProduct}>
           <h3>{editingId ? "Produkt bearbeiten" : "Produkt anlegen"}</h3>
 
@@ -323,7 +348,9 @@ function Admin({ products, offers, onRefresh }) {
           <button type="submit">{editingId ? "Produkt aktualisieren" : "Produkt speichern"}</button>
           {editingId && <button type="button" className="ghost-button" onClick={() => { setEditingId(null); setProductForm(emptyProduct); setPreview("product", ""); }}>Abbrechen</button>}
         </form>
+        )}
 
+        {activeForm === "offer" && (
         <form className="admin-panel" onSubmit={submitOffer}>
           <h3>{editingOfferId ? "Angebot bearbeiten" : "Angebot hochladen"}</h3>
           <input required placeholder="Titel" value={offerForm.title} onChange={(event) => updateOfferField("title", event.target.value)} />
@@ -344,6 +371,7 @@ function Admin({ products, offers, onRefresh }) {
           <button type="submit">{editingOfferId ? "Angebot aktualisieren" : "Angebot veroffentlichen"}</button>
           {editingOfferId && <button type="button" className="ghost-button" onClick={resetOfferForm}>Abbrechen</button>}
         </form>
+        )}
       </div>
 
       <div className="admin-lists">
