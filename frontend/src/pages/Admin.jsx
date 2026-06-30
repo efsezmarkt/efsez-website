@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { api } from "../api";
 import "../styles/admin.css";
 
@@ -28,6 +29,13 @@ const emptyOffer = {
   active: true
 };
 
+function sanitizeFileName(name) {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9._-]/g, "");
+}
+
 function ImagePreview({ src, label }) {
   if (!src) return null;
 
@@ -39,6 +47,23 @@ function ImagePreview({ src, label }) {
   );
 }
 
+function ImageUploadField({ label, value, uploading, onUpload }) {
+  return (
+    <div className="upload-field">
+      <label>
+        <span>{label}</span>
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif"
+          disabled={uploading}
+          onChange={(event) => onUpload(event.target.files?.[0] || null)}
+        />
+      </label>
+      {value && <small>{value.startsWith("http") ? "Hochgeladenes Bild" : "Standardbild"}</small>}
+    </div>
+  );
+}
+
 function Admin({ products, offers, onRefresh }) {
   const [token, setToken] = useState(localStorage.getItem("efsez-admin-token") || "");
   const [productForm, setProductForm] = useState(emptyProduct);
@@ -46,6 +71,7 @@ function Admin({ products, offers, onRefresh }) {
   const [editingId, setEditingId] = useState(null);
   const [editingOfferId, setEditingOfferId] = useState(null);
   const [message, setMessage] = useState("");
+  const [uploadingField, setUploadingField] = useState("");
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))].sort(),
@@ -63,6 +89,39 @@ function Admin({ products, offers, onRefresh }) {
 
   function updateOfferField(field, value) {
     setOfferForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function uploadImage(file, target) {
+    if (!file) return;
+    if (!token) {
+      setMessage("Bitte zuerst den Admin-Token eintragen.");
+      return;
+    }
+
+    setMessage("");
+    setUploadingField(target);
+
+    try {
+      const folder = target === "product" ? "produkte" : "angebote";
+      const pathname = `efsez/${folder}/${Date.now()}-${sanitizeFileName(file.name)}`;
+      const blob = await upload(pathname, file, {
+        access: "public",
+        handleUploadUrl: "/api/uploads",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (target === "product") {
+        updateProductField("image", blob.url);
+      } else {
+        updateOfferField("image", blob.url);
+      }
+
+      setMessage("Bild hochgeladen. Jetzt noch speichern, damit es am Produkt oder Angebot haengen bleibt.");
+    } catch (error) {
+      setMessage(error.message || "Bild konnte nicht hochgeladen werden.");
+    } finally {
+      setUploadingField("");
+    }
   }
 
   async function submitProduct(event) {
@@ -199,7 +258,12 @@ function Admin({ products, offers, onRefresh }) {
             {categories.map((category) => <option value={category} key={category} />)}
           </datalist>
 
-          <input required placeholder="Bildpfad oder Bild-URL" value={productForm.image} onChange={(event) => updateProductField("image", event.target.value)} />
+          <ImageUploadField
+            label={uploadingField === "product" ? "Produktbild wird hochgeladen..." : "Produktbild auswahlen"}
+            value={productForm.image}
+            uploading={uploadingField === "product"}
+            onUpload={(file) => uploadImage(file, "product")}
+          />
           <ImagePreview src={productForm.image} label="Produktbild Vorschau" />
           <textarea required placeholder="Kurze Beschreibung fur Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
           <textarea placeholder="Produktinformationen fur Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
@@ -227,7 +291,12 @@ function Admin({ products, offers, onRefresh }) {
           <h3>{editingOfferId ? "Angebot bearbeiten" : "Angebot hochladen"}</h3>
           <input required placeholder="Titel" value={offerForm.title} onChange={(event) => updateOfferField("title", event.target.value)} />
           <input placeholder="Preis, z. B. 1,99 EUR" value={offerForm.price} onChange={(event) => updateOfferField("price", event.target.value)} />
-          <input placeholder="Bildpfad oder Bild-URL" value={offerForm.image} onChange={(event) => updateOfferField("image", event.target.value)} />
+          <ImageUploadField
+            label={uploadingField === "offer" ? "Angebotsbild wird hochgeladen..." : "Angebotsbild auswahlen"}
+            value={offerForm.image}
+            uploading={uploadingField === "offer"}
+            onUpload={(file) => uploadImage(file, "offer")}
+          />
           <ImagePreview src={offerForm.image} label="Angebotsbild Vorschau" />
           <div className="date-row">
             <input type="date" value={offerForm.starts_at} onChange={(event) => updateOfferField("starts_at", event.target.value)} />
