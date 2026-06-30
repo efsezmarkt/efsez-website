@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { api } from "../api";
 import "../styles/admin.css";
@@ -14,7 +14,7 @@ const emptyProduct = {
   allergens: "",
   barcode: "",
   tags: "",
-  image: "/assets/products/caykur-rize-tee.png",
+  image: "",
   featured: false,
   available: true
 };
@@ -23,7 +23,7 @@ const emptyOffer = {
   title: "",
   description: "",
   price: "",
-  image: "/assets/hero.png",
+  image: "",
   starts_at: "",
   ends_at: "",
   active: true
@@ -82,6 +82,9 @@ function Admin({ products, offers, onRefresh }) {
   const [editingOfferId, setEditingOfferId] = useState(null);
   const [message, setMessage] = useState("");
   const [uploadingField, setUploadingField] = useState("");
+  const [productPreview, setProductPreview] = useState("");
+  const [offerPreview, setOfferPreview] = useState("");
+  const localPreviewUrls = useRef({ product: "", offer: "" });
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))].sort(),
@@ -101,10 +104,27 @@ function Admin({ products, offers, onRefresh }) {
     setOfferForm((current) => ({ ...current, [field]: value }));
   }
 
+  function setPreview(target, src) {
+    const previous = localPreviewUrls.current[target];
+    if (previous) URL.revokeObjectURL(previous);
+
+    localPreviewUrls.current[target] = src.startsWith("blob:") ? src : "";
+
+    if (target === "product") {
+      setProductPreview(src);
+    } else {
+      setOfferPreview(src);
+    }
+  }
+
   async function uploadImage(file, target) {
     if (!file) return;
+
+    const localPreview = URL.createObjectURL(file);
+    setPreview(target, localPreview);
+
     if (!token) {
-      setMessage("Bitte zuerst den Admin-Token eintragen.");
+      setMessage("Vorschau geladen. Bitte Admin-Token eintragen, damit das Bild dauerhaft hochgeladen werden kann.");
       return;
     }
 
@@ -113,7 +133,7 @@ function Admin({ products, offers, onRefresh }) {
 
     try {
       const folder = target === "product" ? "produkte" : "angebote";
-      const pathname = `efsez/${folder}/${Date.now()}-${sanitizeFileName(file.name)}`;
+      const pathname = `efsez/${folder}/${sanitizeFileName(file.name)}`;
       const blob = await upload(pathname, file, {
         access: "public",
         handleUploadUrl: "/api/uploads",
@@ -122,13 +142,15 @@ function Admin({ products, offers, onRefresh }) {
 
       if (target === "product") {
         updateProductField("image", blob.url);
+        setPreview("product", blob.url);
       } else {
         updateOfferField("image", blob.url);
+        setPreview("offer", blob.url);
       }
 
       setMessage("Bild hochgeladen. Jetzt noch speichern, damit es am Produkt oder Angebot haengen bleibt.");
     } catch (error) {
-      setMessage(error.message || "Bild konnte nicht hochgeladen werden.");
+      setMessage(`${error.message || "Bild konnte nicht hochgeladen werden."} Die lokale Vorschau bleibt sichtbar, aber gespeichert wird erst nach erfolgreichem Upload.`);
     } finally {
       setUploadingField("");
     }
@@ -144,6 +166,7 @@ function Admin({ products, offers, onRefresh }) {
         await api.createProduct(productForm, token);
       }
       setProductForm(emptyProduct);
+      setPreview("product", "");
       setEditingId(null);
       await onRefresh();
       setMessage("Produkt gespeichert.");
@@ -162,6 +185,7 @@ function Admin({ products, offers, onRefresh }) {
         await api.createOffer(offerForm, token);
       }
       setOfferForm(emptyOffer);
+      setPreview("offer", "");
       setEditingOfferId(null);
       await onRefresh();
       setMessage(editingOfferId ? "Angebot aktualisiert." : "Angebot veroffentlicht.");
@@ -209,6 +233,7 @@ function Admin({ products, offers, onRefresh }) {
       featured: product.featured,
       available: product.available
     });
+    setPreview("product", product.image || "");
   }
 
   function editOffer(offer) {
@@ -222,11 +247,13 @@ function Admin({ products, offers, onRefresh }) {
       ends_at: offer.ends_at || "",
       active: offer.active
     });
+    setPreview("offer", offer.image || "");
   }
 
   function resetOfferForm() {
     setEditingOfferId(null);
     setOfferForm(emptyOffer);
+    setPreview("offer", "");
   }
 
   return (
@@ -274,7 +301,7 @@ function Admin({ products, offers, onRefresh }) {
             uploading={uploadingField === "product"}
             onUpload={(file) => uploadImage(file, "product")}
           />
-          <ImagePreview src={productForm.image} label="Produktbild Vorschau" />
+          <ImagePreview src={productPreview || productForm.image} label="Produktbild Vorschau" />
           <textarea required placeholder="Kurze Beschreibung fur Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
           <textarea placeholder="Produktinformationen fur Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
 
@@ -294,7 +321,7 @@ function Admin({ products, offers, onRefresh }) {
           </div>
 
           <button type="submit">{editingId ? "Produkt aktualisieren" : "Produkt speichern"}</button>
-          {editingId && <button type="button" className="ghost-button" onClick={() => { setEditingId(null); setProductForm(emptyProduct); }}>Abbrechen</button>}
+          {editingId && <button type="button" className="ghost-button" onClick={() => { setEditingId(null); setProductForm(emptyProduct); setPreview("product", ""); }}>Abbrechen</button>}
         </form>
 
         <form className="admin-panel" onSubmit={submitOffer}>
@@ -307,7 +334,7 @@ function Admin({ products, offers, onRefresh }) {
             uploading={uploadingField === "offer"}
             onUpload={(file) => uploadImage(file, "offer")}
           />
-          <ImagePreview src={offerForm.image} label="Angebotsbild Vorschau" />
+          <ImagePreview src={offerPreview || offerForm.image} label="Angebotsbild Vorschau" />
           <div className="date-row">
             <input type="date" value={offerForm.starts_at} onChange={(event) => updateOfferField("starts_at", event.target.value)} />
             <input type="date" value={offerForm.ends_at} onChange={(event) => updateOfferField("ends_at", event.target.value)} />
