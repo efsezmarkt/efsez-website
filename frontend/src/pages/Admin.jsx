@@ -125,7 +125,7 @@ function Admin({ products, offers, onRefresh }) {
     setPreview(target, localPreview);
 
     if (!token) {
-      setMessage("Vorschau geladen. Bitte Admin-Token eintragen, damit das Bild dauerhaft hochgeladen werden kann.");
+      setMessage("Vorschau geladen. Bitte Zugangscode eintragen, damit das Bild dauerhaft hochgeladen werden kann.");
       return;
     }
 
@@ -263,24 +263,25 @@ function Admin({ products, offers, onRefresh }) {
     <section id="admin" className="admin-section">
       <div className="admin-header">
         <div>
-          <p className="admin-kicker">Admin</p>
-          <h2>Produkte und Angebote verwalten</h2>
-          <p>Diese Felder laufen über die API und sind bewusst für spätere Scanner-, Bestand- und Automationsdaten vorbereitet.</p>
+          <p className="admin-kicker">Personalbereich</p>
+          <h2>Produkte und Angebote pflegen</h2>
+          <p>Geschuetzter Bereich fuer Mitarbeitende: Produkte, Bilder und Wochenangebote fuer die Website bearbeiten.</p>
         </div>
         <label className="token-field">
-          Admin-Token
+          <span className="token-label">Zugangscode</span>
+          <span className="token-hint">Nur fuer Personal</span>
           <input
             type="password"
             value={token}
             onChange={(event) => saveToken(event.target.value)}
-            placeholder="change-me"
+            placeholder="Passwort eingeben"
           />
         </label>
       </div>
 
       {message && <div className="admin-message">{message}</div>}
 
-      <div className="admin-form-switch" role="tablist" aria-label="Admin Formular">
+      <div className="admin-form-switch" role="tablist" aria-label="Personal Formular">
         <button
           type="button"
           role="tab"

@@ -43,13 +43,17 @@ function Header({ currentPage }) {
           <li><a className={isActive("products") ? "active" : ""} href="#/products" onClick={closeMenu}>Produkte</a></li>
           <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Filialen</a></li>
           <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Kontakt</a></li>
-          <li><a className={isActive("admin") ? "active" : ""} href="#/admin" onClick={closeMenu}>Admin</a></li>
         </ul>
       </nav>
 
-      <a href="https://wa.me/490000000000" className="header-whatsapp" onClick={closeMenu}>
-        WhatsApp
-      </a>
+      <div className="header-actions">
+        <a href="https://wa.me/490000000000" className="header-whatsapp" onClick={closeMenu}>
+          WhatsApp
+        </a>
+        <a className={isActive("admin") ? "staff-access active" : "staff-access"} href="#/admin" onClick={closeMenu}>
+          Personalzugang
+        </a>
+      </div>
     </header>
   );
 }

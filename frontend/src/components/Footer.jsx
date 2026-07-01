@@ -23,6 +23,7 @@ function Footer() {
 
       <div className="footer-bottom">
         <p>© 2026 EFSE’Z Markt. Alle Rechte vorbehalten.</p>
+        <a href="#/admin" className="footer-staff-access">Personalzugang</a>
       </div>
     </footer>
   );

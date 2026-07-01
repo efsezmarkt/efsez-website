@@ -46,6 +46,17 @@
   text-align: center;
 }
 
+.footer-staff-access {
+  display: inline-block;
+  margin-top: 8px;
+  color: #8a8a8a;
+  font-size: 0.78rem;
+}
+
+.footer-staff-access:hover {
+  color: var(--accent-orange);
+}
+
 @media (max-width: 800px) {
   .footer {
     padding: 45px 20px 20px;

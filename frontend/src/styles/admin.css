@@ -37,8 +37,18 @@
 .token-field {
   padding: 18px;
   display: grid;
-  gap: 8px;
+  gap: 7px;
   color: var(--primary-green);
+  font-weight: 800;
+}
+
+.token-label {
+  font-size: 1.02rem;
+}
+
+.token-hint {
+  color: #68786e;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
