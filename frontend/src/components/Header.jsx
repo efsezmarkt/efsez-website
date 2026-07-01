@@ -19,6 +19,13 @@ function Header({ currentPage }) {
 
   return (
     <header className={`header ${currentPage === "home" ? "" : "header-solid"} ${menuOpen ? "menu-open" : ""}`}>
+      <button
+        type="button"
+        className="menu-scrim"
+        aria-label="Menu schliessen"
+        onClick={closeMenu}
+      />
+
       <a href="#/" className="logo-area">
         <img src={logo} alt="EFSE'Z Markt Logo" />
       </a>
@@ -37,6 +44,11 @@ function Header({ currentPage }) {
       </button>
 
       <div id="main-navigation" className={menuOpen ? "header-menu open" : "header-menu"}>
+        <div className="mobile-menu-head">
+          <span>EFSE'Z Markt</span>
+          <strong>Menu</strong>
+        </div>
+
         <nav className="main-nav">
           <ul className="nav-links">
             <li><a className={isActive("home") ? "active" : ""} href="#/" onClick={closeMenu}>Home</a></li>
