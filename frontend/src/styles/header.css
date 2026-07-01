@@ -161,14 +161,14 @@
 
 @media (max-width: 950px) {
   .header {
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     width: 100%;
     max-width: none;
     margin: 0;
-    background: rgba(8, 76, 48, 0.66);
+    background: rgba(8, 76, 48, 0.7);
     backdrop-filter: blur(20px) saturate(1.25);
     grid-template-columns: minmax(0, 1fr) 46px;
     gap: 12px;
@@ -195,6 +195,8 @@
 
   .menu-toggle {
     display: inline-flex;
+    position: relative;
+    z-index: 1002;
     justify-self: end;
     align-items: center;
     justify-content: center;
@@ -241,7 +243,7 @@
     z-index: 998;
     display: block;
     border: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.14);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.22s ease;
@@ -258,18 +260,20 @@
     right: 0;
     bottom: 0;
     z-index: 999;
-    width: min(80vw, 340px);
+    width: min(78vw, 330px);
+    height: 100dvh;
     display: grid;
     grid-template-columns: 1fr;
     align-content: start;
     gap: 18px;
-    padding: 24px 18px 18px;
+    padding: 26px 18px 18px;
     border-left: 1px solid rgba(255,255,255,0.12);
     border-radius: 18px 0 0 18px;
     background:
-      linear-gradient(180deg, #075537, #043a25);
+      linear-gradient(180deg, #075334 0%, #04331f 100%);
     box-shadow: -24px 0 70px rgba(0,0,0,0.34);
     backdrop-filter: none;
+    overflow-y: auto;
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);
@@ -287,6 +291,7 @@
     gap: 5px;
     padding: 8px 4px 12px;
     border-bottom: 1px solid rgba(255,255,255,0.14);
+    text-align: right;
   }
 
   .mobile-menu-head span {
@@ -311,19 +316,20 @@
   .nav-links a {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     min-height: 50px;
-    padding: 0 14px;
-    border: 1px solid rgba(255,255,255,0.08);
+    padding: 0 16px;
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 12px;
     font-size: 1.04rem;
-    background: rgba(255,255,255,0.075);
+    text-align: right;
+    background: #0b6841;
   }
 
   .nav-links a.active,
   .nav-links a:hover {
-    border-color: rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.2);
+    background: #0f7a4d;
   }
 
   .nav-links a.active::after,
@@ -334,12 +340,13 @@
   .header-actions {
     display: flex;
     justify-self: stretch;
+    justify-content: flex-end;
     gap: 10px;
     padding-top: 6px;
   }
 
   .header-whatsapp {
-    flex: 1;
+    flex: 0 1 190px;
     justify-content: center;
     padding: 13px 18px;
     border-radius: 12px;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../assets/images/logo.png";
 
 function Header({ currentPage }) {
@@ -16,6 +16,21 @@ function Header({ currentPage }) {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const closeOnScroll = () => setMenuOpen(false);
+    window.addEventListener("scroll", closeOnScroll, { passive: true });
+    window.addEventListener("wheel", closeOnScroll, { passive: true });
+    window.addEventListener("touchmove", closeOnScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", closeOnScroll);
+      window.removeEventListener("wheel", closeOnScroll);
+      window.removeEventListener("touchmove", closeOnScroll);
+    };
+  }, [menuOpen]);
 
   return (
     <header className={`header ${currentPage === "home" ? "" : "header-solid"} ${menuOpen ? "menu-open" : ""}`}>
