@@ -138,11 +138,25 @@ function isAdmin(req) {
 }
 
 function normalizeProduct(row) {
-  return { ...row, featured: Boolean(row.featured), available: Boolean(row.available) };
+  return {
+    ...row,
+    image: publicAssetPath(row.image),
+    featured: Boolean(row.featured),
+    available: Boolean(row.available)
+  };
 }
 
 function normalizeOffer(row) {
-  return { ...row, active: Boolean(row.active) };
+  return {
+    ...row,
+    image: publicAssetPath(row.image),
+    active: Boolean(row.active)
+  };
+}
+
+function publicAssetPath(path) {
+  if (!path) return "";
+  return path.replace(/^\/src\/assets\//, "/assets/");
 }
 
 function requireFields(payload, fields) {
@@ -212,7 +226,9 @@ async function handleProducts(req, res, id) {
       payload.tags || "",
       id
     );
-    return send(res, 200, normalizeProduct(db.prepare("SELECT * FROM products WHERE id = ?").get(id)));
+    const updatedProduct = db.prepare("SELECT * FROM products WHERE id = ?").get(id);
+    if (!updatedProduct) return send(res, 404, { error: "Produkt nicht gefunden." });
+    return send(res, 200, normalizeProduct(updatedProduct));
   }
 
   if (req.method === "DELETE" && id) {
@@ -239,6 +255,29 @@ async function handleOffers(req, res, id) {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(payload.title, payload.description, payload.price || "", payload.image || "", payload.starts_at || "", payload.ends_at || "", payload.active === false ? 0 : 1);
     return send(res, 201, normalizeOffer(db.prepare("SELECT * FROM offers WHERE id = ?").get(result.lastInsertRowid)));
+  }
+
+  if (req.method === "PUT" && id) {
+    const payload = await readJson(req);
+    requireFields(payload, ["title", "description"]);
+    db.prepare(`
+      UPDATE offers
+      SET title = ?, description = ?, price = ?, image = ?, starts_at = ?, ends_at = ?, active = ?
+      WHERE id = ?
+    `).run(
+      payload.title,
+      payload.description,
+      payload.price || "",
+      payload.image || "",
+      payload.starts_at || "",
+      payload.ends_at || "",
+      payload.active === false ? 0 : 1,
+      id
+    );
+
+    const updatedOffer = db.prepare("SELECT * FROM offers WHERE id = ?").get(id);
+    if (!updatedOffer) return send(res, 404, { error: "Angebot nicht gefunden." });
+    return send(res, 200, normalizeOffer(updatedOffer));
   }
 
   if (req.method === "DELETE" && id) {

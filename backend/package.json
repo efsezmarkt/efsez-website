@@ -4,7 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js"
-  }
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "description": "Local EFSEZ API for development. Production uses Vercel Functions in frontend/api.",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
