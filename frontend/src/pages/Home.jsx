@@ -4,6 +4,7 @@ import ProductCarousel from "../components/ProductCarousel";
 import OffersSection from "../components/OffersSection";
 import InfoSection from "../components/InfoSection";
 import ContactSection from "../components/ContactSection";
+import ContactFormSection from "../components/ContactFormSection";
 import BrandSection from "../components/BrandSection";
 import StatsSection from "../components/StatsSection";
 import "../styles/brands.css";
@@ -74,6 +75,7 @@ function Home({ products, offers }) {
       <FeaturedProducts products={products} />
       <BrandSection />
       <InfoSection />
+      <ContactFormSection />
       <ContactSection />
     </>
   );

@@ -1,3 +1,105 @@
+.contact-form-section {
+  padding: 90px 50px;
+  background: #f6f8f3;
+  color: var(--dark);
+}
+
+.contact-form-page {
+  padding-top: 150px;
+}
+
+.contact-form-layout {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 42px;
+  align-items: center;
+}
+
+.contact-form-copy h2 {
+  max-width: 640px;
+  color: var(--primary-green);
+  font-size: 2.6rem;
+  line-height: 1.08;
+  margin-bottom: 18px;
+}
+
+.contact-form-copy p {
+  max-width: 560px;
+  color: #405249;
+  line-height: 1.7;
+}
+
+.contact-form-card {
+  display: grid;
+  gap: 14px;
+  padding: 26px;
+  border: 1px solid rgba(13, 92, 58, 0.12);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+}
+
+.contact-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.contact-form-card label {
+  display: grid;
+  gap: 8px;
+  color: var(--primary-green);
+  font-weight: 900;
+}
+
+.contact-form-card input,
+.contact-form-card select,
+.contact-form-card textarea {
+  width: 100%;
+  border: 1px solid #d9e2d4;
+  border-radius: 6px;
+  padding: 13px 14px;
+  color: var(--dark);
+  font: inherit;
+  background: #fbfcfa;
+}
+
+.contact-form-card textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.contact-form-card button {
+  border: 0;
+  border-radius: 6px;
+  padding: 14px 18px;
+  background: var(--primary-green);
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.contact-form-card button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
+.contact-form-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: #eef6ec;
+  color: var(--primary-green);
+  font-weight: 800;
+}
+
+.contact-form-error {
+  background: #fff1ed;
+  color: #a33a1f;
+}
+
 .contact-section {
   padding: 90px 50px;
   background: var(--primary-green);
@@ -120,6 +222,8 @@
 }
 
 @media (max-width: 900px) {
+  .contact-form-layout,
+  .contact-form-grid,
   .contact-layout,
   .branch-cards,
   .maps-grid {
@@ -128,6 +232,22 @@
 
   .contact-section {
     padding: 70px 20px;
+  }
+
+  .contact-form-section {
+    padding: 70px 20px;
+  }
+
+  .contact-form-page {
+    padding-top: 90px;
+  }
+
+  .contact-form-copy h2 {
+    font-size: 2rem;
+  }
+
+  .contact-form-card {
+    padding: 18px;
   }
 
   .contact-intro h2 {

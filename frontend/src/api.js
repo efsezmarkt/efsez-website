@@ -27,5 +27,6 @@ export const api = {
   createOffer: (offer, token) => request("/offers", { method: "POST", body: offer, token }),
   updateOffer: (id, offer, token) => request(`/offers/${id}`, { method: "PUT", body: offer, token }),
   deleteOffer: (id, token) => request(`/offers/${id}`, { method: "DELETE", token }),
+  submitContactRequest: (payload) => request("/contact", { method: "POST", body: payload }),
   verifyStaffAccess: (token) => request("/admin/session", { method: "POST", body: {}, token })
 };

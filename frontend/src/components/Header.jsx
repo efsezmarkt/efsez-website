@@ -42,7 +42,7 @@ function Header({ currentPage }) {
           <li><a href="#/" onClick={() => scrollHomeSection("offers")}>Angebote</a></li>
           <li><a className={isActive("products") ? "active" : ""} href="#/products" onClick={closeMenu}>Produkte</a></li>
           <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Filialen</a></li>
-          <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Kontakt</a></li>
+          <li><a className={isActive("contact") ? "active" : ""} href="#/contact" onClick={closeMenu}>Kontakt</a></li>
         </ul>
       </nav>
 

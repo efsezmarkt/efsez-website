@@ -49,6 +49,18 @@ async function createSchema() {
     )
   `;
 
+  await sql`
+    CREATE TABLE IF NOT EXISTS contact_requests (
+      id SERIAL PRIMARY KEY,
+      name TEXT DEFAULT '',
+      contact TEXT NOT NULL,
+      purpose TEXT NOT NULL,
+      message TEXT NOT NULL,
+      handled BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   const [{ count: productCount }] = await sql`SELECT COUNT(*)::int AS count FROM products`;
   if (productCount === 0) {
     for (const product of seedProducts) {

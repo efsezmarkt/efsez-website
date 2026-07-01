@@ -3,6 +3,7 @@ import { api } from "./api";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Admin from "./pages/Admin";
@@ -73,6 +74,8 @@ function App() {
           <ProductDetail product={selectedProduct} products={products} />
         ) : route.page === "admin" ? (
           <Admin products={products} offers={offers} onRefresh={loadData} />
+        ) : route.page === "contact" ? (
+          <Contact />
         ) : (
           <Home products={products} offers={offers} />
         )}

@@ -9,9 +9,9 @@ function Footer() {
 
         <div>
           <h4>Navigation</h4>
-          <a href="#home">Startseite</a>
-          <a href="#products">Produkte</a>
-          <a href="#contact">Kontakt</a>
+          <a href="#/">Startseite</a>
+          <a href="#/products">Produkte</a>
+          <a href="#/contact">Kontakt</a>
         </div>
 
         <div>

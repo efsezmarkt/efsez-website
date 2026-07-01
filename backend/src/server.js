@@ -54,6 +54,16 @@ db.exec(`
     active INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS contact_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    contact TEXT NOT NULL,
+    purpose TEXT NOT NULL,
+    message TEXT NOT NULL,
+    handled INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 for (const statement of [
@@ -162,6 +172,29 @@ function publicAssetPath(path) {
 function requireFields(payload, fields) {
   const missing = fields.filter((field) => !String(payload[field] ?? "").trim());
   if (missing.length) throw new Error(`Fehlende Felder: ${missing.join(", ")}`);
+}
+
+async function handleContact(req, res) {
+  if (req.method !== "POST") return send(res, 405, { error: "Methode nicht erlaubt." });
+
+  const payload = await readJson(req);
+  requireFields(payload, ["contact", "purpose", "message"]);
+
+  const allowedPurposes = new Set([
+    "Produktwunsch",
+    "Produktverfuegbarkeit",
+    "Partneranfrage",
+    "Lieferant / Zusammenarbeit",
+    "Allgemeine Anfrage"
+  ]);
+  const purpose = allowedPurposes.has(payload.purpose) ? payload.purpose : "Allgemeine Anfrage";
+
+  const result = db.prepare(`
+    INSERT INTO contact_requests (name, contact, purpose, message)
+    VALUES (?, ?, ?, ?)
+  `).run(payload.name || "", payload.contact, purpose, payload.message);
+
+  return send(res, 201, { ok: true, id: result.lastInsertRowid });
 }
 
 async function handleProducts(req, res, id) {
@@ -304,6 +337,7 @@ const server = createServer(async (req, res) => {
 
     if (url.pathname === "/api/health") return send(res, 200, { ok: true });
     if (url.pathname === "/api/admin/session") return handleAdminSession(req, res);
+    if (url.pathname === "/api/contact") return handleContact(req, res);
     if (productMatch) return handleProducts(req, res, productMatch[1] ? Number(productMatch[1]) : null);
     if (offerMatch) return handleOffers(req, res, offerMatch[1] ? Number(offerMatch[1]) : null);
 
