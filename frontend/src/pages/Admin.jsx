@@ -76,6 +76,10 @@ function ImageUploadField({ label, value, uploading, onUpload }) {
 
 function Admin({ products, offers, onRefresh }) {
   const [token, setToken] = useState(localStorage.getItem("efsez-admin-token") || "");
+  const [accessCode, setAccessCode] = useState("");
+  const [isUnlocked, setIsUnlocked] = useState(
+    sessionStorage.getItem("efsez-staff-access") === "true" && Boolean(localStorage.getItem("efsez-admin-token"))
+  );
   const [productForm, setProductForm] = useState(emptyProduct);
   const [offerForm, setOfferForm] = useState(emptyOffer);
   const [activeForm, setActiveForm] = useState("product");
@@ -95,6 +99,31 @@ function Admin({ products, offers, onRefresh }) {
   function saveToken(value) {
     setToken(value);
     localStorage.setItem("efsez-admin-token", value);
+  }
+
+  async function submitAccess(event) {
+    event.preventDefault();
+    setMessage("");
+
+    try {
+      await api.verifyStaffAccess(accessCode);
+      saveToken(accessCode);
+      sessionStorage.setItem("efsez-staff-access", "true");
+      setIsUnlocked(true);
+      setAccessCode("");
+    } catch (error) {
+      sessionStorage.removeItem("efsez-staff-access");
+      setIsUnlocked(false);
+      setMessage(error.message);
+    }
+  }
+
+  function lockAccess() {
+    sessionStorage.removeItem("efsez-staff-access");
+    localStorage.removeItem("efsez-admin-token");
+    setToken("");
+    setIsUnlocked(false);
+    setMessage("");
   }
 
   function updateProductField(field, value) {
@@ -259,6 +288,34 @@ function Admin({ products, offers, onRefresh }) {
     setPreview("offer", "");
   }
 
+  if (!isUnlocked) {
+    return (
+      <section id="admin" className="admin-section access-section">
+        <form className="access-panel" onSubmit={submitAccess}>
+          <p className="admin-kicker">Personalzugang</p>
+          <h2>Zugangscode erforderlich</h2>
+          <p>Dieser Bereich ist nur fuer Mitarbeitende. Nach der Anmeldung koennen Produkte, Bilder und Angebote gepflegt werden.</p>
+
+          <label>
+            Zugangscode
+            <input
+              type="password"
+              value={accessCode}
+              onChange={(event) => setAccessCode(event.target.value)}
+              placeholder="Code eingeben"
+              autoComplete="current-password"
+              autoFocus
+              required
+            />
+          </label>
+
+          <button type="submit">Einloggen</button>
+          {message && <div className="admin-message access-message">{message}</div>}
+        </form>
+      </section>
+    );
+  }
+
   return (
     <section id="admin" className="admin-section">
       <div className="admin-header">
@@ -267,16 +324,7 @@ function Admin({ products, offers, onRefresh }) {
           <h2>Produkte und Angebote pflegen</h2>
           <p>Geschuetzter Bereich fuer Mitarbeitende: Produkte, Bilder und Wochenangebote fuer die Website bearbeiten.</p>
         </div>
-        <label className="token-field">
-          <span className="token-label">Zugangscode</span>
-          <span className="token-hint">Nur fuer Personal</span>
-          <input
-            type="password"
-            value={token}
-            onChange={(event) => saveToken(event.target.value)}
-            placeholder="Passwort eingeben"
-          />
-        </label>
+        <button type="button" className="lock-button" onClick={lockAccess}>Abmelden</button>
       </div>
 
       {message && <div className="admin-message">{message}</div>}

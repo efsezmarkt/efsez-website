@@ -176,7 +176,7 @@ async function handleProducts(req, res, id) {
     return send(res, 200, normalizeProduct(row));
   }
 
-  if (!isAdmin(req)) return send(res, 401, { error: "Admin-Token fehlt oder ist falsch." });
+  if (!isAdmin(req)) return send(res, 401, { error: "Zugangscode fehlt oder ist falsch." });
 
   if (req.method === "POST" && !id) {
     const payload = await readJson(req);
@@ -245,7 +245,7 @@ async function handleOffers(req, res, id) {
     return send(res, 200, rows.map(normalizeOffer));
   }
 
-  if (!isAdmin(req)) return send(res, 401, { error: "Admin-Token fehlt oder ist falsch." });
+  if (!isAdmin(req)) return send(res, 401, { error: "Zugangscode fehlt oder ist falsch." });
 
   if (req.method === "POST" && !id) {
     const payload = await readJson(req);
@@ -288,6 +288,12 @@ async function handleOffers(req, res, id) {
   return send(res, 404, { error: "Route nicht gefunden." });
 }
 
+function handleAdminSession(req, res) {
+  if (req.method !== "POST") return send(res, 405, { error: "Methode nicht erlaubt." });
+  if (!isAdmin(req)) return send(res, 401, { error: "Zugangscode ist falsch." });
+  return send(res, 200, { ok: true });
+}
+
 const server = createServer(async (req, res) => {
   if (req.method === "OPTIONS") return send(res, 200, { ok: true });
 
@@ -297,6 +303,7 @@ const server = createServer(async (req, res) => {
     const offerMatch = url.pathname.match(/^\/api\/offers\/?(\d+)?$/);
 
     if (url.pathname === "/api/health") return send(res, 200, { ok: true });
+    if (url.pathname === "/api/admin/session") return handleAdminSession(req, res);
     if (productMatch) return handleProducts(req, res, productMatch[1] ? Number(productMatch[1]) : null);
     if (offerMatch) return handleOffers(req, res, offerMatch[1] ? Number(offerMatch[1]) : null);
 

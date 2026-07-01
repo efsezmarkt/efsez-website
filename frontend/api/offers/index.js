@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      if (!isAdmin(req)) return send(res, 401, { error: "Admin-Token fehlt oder ist falsch." });
+      if (!isAdmin(req)) return send(res, 401, { error: "Zugangscode fehlt oder ist falsch." });
 
       const payload = parseBody(req);
       requireFields(payload, ["title", "description"]);

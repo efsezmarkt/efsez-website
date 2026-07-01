@@ -3,6 +3,71 @@
   background: #f3f7f1;
 }
 
+.access-section {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  place-items: center;
+}
+
+.access-panel {
+  width: min(100%, 460px);
+  display: grid;
+  gap: 16px;
+  padding: 30px;
+  border: 1px solid rgba(13, 92, 58, 0.12);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.08);
+}
+
+.access-panel h2 {
+  color: var(--primary-green);
+  font-size: 2rem;
+  line-height: 1.12;
+}
+
+.access-panel p {
+  color: #405249;
+  line-height: 1.55;
+}
+
+.access-panel label {
+  display: grid;
+  gap: 8px;
+  color: var(--primary-green);
+  font-weight: 900;
+}
+
+.access-panel input,
+.access-panel button {
+  width: 100%;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.access-panel input {
+  border: 1px solid #d9e2d4;
+  padding: 13px 14px;
+}
+
+.access-panel button,
+.lock-button {
+  border: 0;
+  background: var(--primary-green);
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.access-panel button {
+  padding: 13px 16px;
+}
+
+.access-message {
+  margin: 0;
+  padding: 12px 14px;
+}
+
 .admin-header {
   max-width: 1180px;
   margin: 0 auto 30px;
@@ -50,6 +115,13 @@
   color: #68786e;
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.lock-button {
+  justify-self: end;
+  align-self: center;
+  padding: 12px 18px;
+  border-radius: 6px;
 }
 
 .admin-lists {
@@ -334,6 +406,19 @@
     margin-bottom: 18px;
   }
 
+  .access-section {
+    min-height: calc(100vh - 170px);
+    padding-top: 42px;
+  }
+
+  .access-panel {
+    padding: 22px;
+  }
+
+  .access-panel h2 {
+    font-size: 1.65rem;
+  }
+
   .admin-header h2 {
     font-size: 1.9rem;
     line-height: 1.12;
@@ -356,6 +441,10 @@
 
   .token-field {
     padding: 14px;
+  }
+
+  .lock-button {
+    justify-self: stretch;
   }
 
   .admin-form-switch {

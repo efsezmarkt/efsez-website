@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   try {
     const body = parseBody(req);
     if (body?.type === "blob.generate-client-token" && !isAdmin(req)) {
-      return send(res, 401, { error: "Admin-Token fehlt oder ist falsch." });
+      return send(res, 401, { error: "Zugangscode fehlt oder ist falsch." });
     }
 
     const response = await handleUpload({

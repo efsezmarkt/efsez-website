@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       return send(res, 200, normalizeProduct(product));
     }
 
-    if (!isAdmin(req)) return send(res, 401, { error: "Admin-Token fehlt oder ist falsch." });
+    if (!isAdmin(req)) return send(res, 401, { error: "Zugangscode fehlt oder ist falsch." });
 
     if (req.method === "PUT") {
       const payload = parseBody(req);
