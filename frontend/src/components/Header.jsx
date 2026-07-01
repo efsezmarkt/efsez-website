@@ -59,11 +59,6 @@ function Header({ currentPage }) {
       </button>
 
       <div id="main-navigation" className={menuOpen ? "header-menu open" : "header-menu"}>
-        <div className="mobile-menu-head">
-          <span>EFSE'Z Markt</span>
-          <strong>Menu</strong>
-        </div>
-
         <nav className="main-nav">
           <ul className="nav-links">
             <li><a className={isActive("home") ? "active" : ""} href="#/" onClick={closeMenu}>Home</a></li>
