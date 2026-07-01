@@ -203,6 +203,10 @@
     padding: 10px 12px;
   }
 
+  .menu-open {
+    padding-bottom: 14px;
+  }
+
   .logo-area img {
     width: 92px;
   }
@@ -210,5 +214,9 @@
   .menu-toggle {
     width: 42px;
     height: 42px;
+  }
+
+  .nav-links a {
+    padding: 12px 2px;
   }
 }

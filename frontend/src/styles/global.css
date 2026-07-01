@@ -381,8 +381,34 @@ input {
 }
 
 @media (max-width: 600px) {
+  .hero {
+    min-height: calc(100vh - 64px);
+    padding: 54px 16px 120px;
+  }
+
   .hero-text h2 {
-    font-size: 2.6rem;
+    font-size: 2.35rem;
+    line-height: 1.06;
+    margin-bottom: 18px;
+  }
+
+  .hero-label {
+    margin-bottom: 14px;
+    font-size: 0.78rem;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .hero-line {
+    margin-bottom: 20px;
+  }
+
+  .hero-buttons {
+    margin-top: 28px;
+    gap: 12px;
   }
 
   .hero-logo-card {
@@ -391,11 +417,42 @@ input {
     padding: 28px;
   }
 
+  .hero-visual::before,
+  .hero-visual::after,
+  .hero-dots,
+  .hero-plant-lines {
+    display: none;
+  }
+
   .btn-primary,
   .btn-secondary {
     width: 100%;
     max-width: 280px;
     text-align: center;
+  }
+
+  .hero-product-strip {
+    border-radius: 8px;
+  }
+
+  .hero-product-track {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .hero-product-tile {
+    width: 132px;
+    min-height: 136px;
+    grid-template-rows: 78px auto;
+    padding: 10px;
+  }
+
+  .hero-product-tile img {
+    height: 78px;
+  }
+
+  .hero-product-tile span {
+    font-size: 0.82rem;
   }
 }
 

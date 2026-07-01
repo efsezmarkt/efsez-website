@@ -380,4 +380,44 @@
   .products-page-intro h1 {
     font-size: 2.2rem;
   }
+
+  .products-page-intro p {
+    font-size: 0.98rem;
+  }
+
+  .search-wrapper input {
+    padding: 14px 18px;
+  }
+
+  .product-info {
+    padding: 18px;
+  }
+
+  .product-image {
+    height: 195px;
+  }
+
+  .product-description {
+    min-height: auto;
+  }
+
+  .product-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .product-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .catalog-cta {
+    margin-top: 40px;
+    padding: 24px 18px;
+    border-radius: 8px;
+  }
+
+  .catalog-cta h3 {
+    font-size: 1.45rem;
+  }
 }

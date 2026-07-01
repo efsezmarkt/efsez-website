@@ -78,4 +78,17 @@
   .offers-grid {
     grid-template-columns: 1fr;
   }
+
+  .offer-content {
+    padding: 16px;
+  }
+
+  .offer-content h3,
+  .offer-content strong {
+    font-size: 1.18rem;
+  }
+
+  .offer-content p {
+    font-size: 0.96rem;
+  }
 }
