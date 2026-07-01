@@ -15,7 +15,9 @@ function ProductCard({ product }) {
 
       <div className="product-info">
         <p className="product-category">{product.category}</p>
-        <h3>{product.name}</h3>
+        <h3>
+          <a href={`#/product/${product.id}`}>{product.name}</a>
+        </h3>
         <p className="product-brand">{product.brand}</p>
 
         {!product.available && (
