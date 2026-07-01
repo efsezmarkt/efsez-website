@@ -357,7 +357,7 @@ input {
 
 @media (max-width: 900px) {
   .hero {
-    padding: 118px 24px 150px;
+    padding: 70px 24px 150px;
   }
 
   .hero-inner {
@@ -393,7 +393,7 @@ input {
 @media (max-width: 600px) {
   .hero {
     min-height: calc(100vh - 64px);
-    padding: 112px 16px 120px;
+    padding: 54px 16px 120px;
   }
 
   .hero-text h2 {
