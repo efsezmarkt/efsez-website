@@ -256,24 +256,22 @@
 
   .header-menu {
     position: fixed;
-    top: 0;
+    top: 62px;
     right: 0;
-    bottom: 0;
     z-index: 999;
-    width: min(78vw, 330px);
-    height: 100dvh;
+    width: min(76vw, 315px);
     display: grid;
     grid-template-columns: 1fr;
     align-content: start;
-    gap: 18px;
-    padding: 26px 18px 18px;
+    gap: 14px;
+    padding: 18px 18px 16px;
     border-left: 1px solid rgba(255,255,255,0.12);
-    border-radius: 18px 0 0 18px;
-    background:
-      linear-gradient(180deg, #075334 0%, #04331f 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    border-radius: 0 0 0 18px;
+    background: #053d28;
     box-shadow: -24px 0 70px rgba(0,0,0,0.34);
     backdrop-filter: none;
-    overflow-y: auto;
+    overflow: hidden;
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);
@@ -289,7 +287,7 @@
   .mobile-menu-head {
     display: grid;
     gap: 5px;
-    padding: 8px 4px 12px;
+    padding: 2px 0 10px;
     border-bottom: 1px solid rgba(255,255,255,0.14);
     text-align: right;
   }
@@ -309,7 +307,8 @@
 
   .nav-links {
     display: grid;
-    gap: 8px;
+    justify-items: end;
+    gap: 0;
     padding: 0;
   }
 
@@ -317,19 +316,21 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    min-height: 50px;
-    padding: 0 16px;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    font-size: 1.04rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 0 0 14px;
+    border: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.11);
+    border-radius: 0;
+    font-size: 1.08rem;
     text-align: right;
-    background: #0b6841;
+    background: transparent;
   }
 
   .nav-links a.active,
   .nav-links a:hover {
-    border-color: rgba(255,255,255,0.2);
-    background: #0f7a4d;
+    color: var(--accent-orange);
+    background: transparent;
   }
 
   .nav-links a.active::after,
@@ -342,7 +343,7 @@
     justify-self: stretch;
     justify-content: flex-end;
     gap: 10px;
-    padding-top: 6px;
+    padding-top: 2px;
   }
 
   .header-whatsapp {
