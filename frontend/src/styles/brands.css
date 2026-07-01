@@ -20,8 +20,8 @@
 }
 
 .brand-pill {
-  padding: 18px 32px;
-  border-radius: 999px;
+  padding: 16px 28px;
+  border-radius: 8px;
 
   background: var(--background);
   color: var(--primary-green);
@@ -29,7 +29,8 @@
   font-size: 1.2rem;
   font-weight: 900;
 
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border: 1px solid rgba(13, 92, 58, 0.08);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.05);
   transition: 0.2s;
 }
 

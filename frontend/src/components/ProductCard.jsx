@@ -1,5 +1,5 @@
 function ProductCard({ product }) {
-  const whatsappText = `Hallo EFSE'Z Markt, ich interessiere mich fur ${product.name}.`;
+  const whatsappText = `Hallo EFSE'Z Markt, ich interessiere mich für ${product.name}.`;
 
   return (
     <article className="product-card">
@@ -19,7 +19,7 @@ function ProductCard({ product }) {
         <p className="product-brand">{product.brand}</p>
 
         {!product.available && (
-          <p className="availability-warning">Aktuell nicht verfugbar</p>
+          <p className="availability-warning">Aktuell nicht verfügbar</p>
         )}
 
         <p className="product-description">{product.description}</p>

@@ -35,12 +35,9 @@ function Home({ products, offers }) {
 
         <div className="hero-inner">
           <div className="hero-text">
-            <p className="hero-label">EFSE'Z Markt Nurnberg</p>
-
             <h2>
-              International. Frisch.
-              <br />
-              Direkt um die Ecke.
+              International frisch.
+              <span>Direkt um die Ecke.</span>
             </h2>
 
             <div className="hero-line">
@@ -49,9 +46,9 @@ function Home({ products, offers }) {
             </div>
 
             <p>
-              Lebensmittel, Fleischtheke, Backwaren, Spezialitaten und Wochenangebote:
-              alles sichtbar, schnell auffindbar und spater direkt mit Bestand und
-              Automationen verbunden.
+              Internationale Lebensmittel, frische Thekenprodukte, Backwaren und
+              Wochenangebote in einem Markt, der vertraut wirkt und trotzdem
+              jeden Einkauf ein bisschen besonderer macht.
             </p>
 
             <div className="hero-buttons">

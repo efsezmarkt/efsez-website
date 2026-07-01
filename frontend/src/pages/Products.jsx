@@ -27,9 +27,8 @@ function Products({ products }) {
       <div className="products-page-intro">
         <h1>Sortiment entdecken</h1>
         <p>
-          Der Katalog ist fur echte Produktdaten vorbereitet: Suche, Kategorien,
-          Detailseiten und spater Barcode-, Bestand- und Automationsdaten laufen
-          uber dieselbe API-Struktur.
+          Entdecken Sie ausgewählte Produkte aus unserem Sortiment. Suchen Sie nach
+          Marken, Kategorien oder Spezialitäten und fragen Sie Produkte direkt an.
         </p>
       </div>
 
@@ -74,7 +73,7 @@ function Products({ products }) {
       <div className="catalog-cta">
         <h3>Nicht gefunden, was Sie suchen?</h3>
         <p>
-          Unser Sortiment wird regelmassig erweitert. Fragen Sie einfach direkt bei uns nach.
+          Unser Sortiment wird regelmäßig erweitert. Fragen Sie einfach direkt bei uns nach.
         </p>
 
         <a href="#contact">Kontakt aufnehmen</a>

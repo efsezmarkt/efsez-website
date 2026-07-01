@@ -1,5 +1,5 @@
 .offers-section {
-  padding: 80px 50px;
+  padding: 90px 50px 72px;
   background: #ffffff;
 }
 
@@ -72,7 +72,7 @@
 
 @media (max-width: 620px) {
   .offers-section {
-    padding: 60px 20px;
+    padding: 64px 20px 54px;
   }
 
   .offers-grid {

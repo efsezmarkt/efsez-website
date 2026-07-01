@@ -265,7 +265,7 @@ function Admin({ products, offers, onRefresh }) {
         <div>
           <p className="admin-kicker">Admin</p>
           <h2>Produkte und Angebote verwalten</h2>
-          <p>Diese Felder laufen uber die API und sind bewusst fur spatere Scanner-, Bestand- und Automationsdaten vorbereitet.</p>
+          <p>Diese Felder laufen über die API und sind bewusst für spätere Scanner-, Bestand- und Automationsdaten vorbereitet.</p>
         </div>
         <label className="token-field">
           Admin-Token
@@ -327,8 +327,8 @@ function Admin({ products, offers, onRefresh }) {
             onUpload={(file) => uploadImage(file, "product")}
           />
           <ImagePreview src={productPreview || productForm.image} label="Produktbild Vorschau" />
-          <textarea required placeholder="Kurze Beschreibung fur Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
-          <textarea placeholder="Produktinformationen fur Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
+          <textarea required placeholder="Kurze Beschreibung für Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
+          <textarea placeholder="Produktinformationen für Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
 
           <div className="admin-field-grid">
             <input placeholder="Herkunft" value={productForm.origin} onChange={(event) => updateProductField("origin", event.target.value)} />

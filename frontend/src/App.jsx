@@ -23,7 +23,7 @@ function App() {
   const [products, setProducts] = useState(fallbackProducts);
   const [offers, setOffers] = useState([]);
   const [route, setRoute] = useState(() => parseRoute(window.location.hash));
-  const [status, setStatus] = useState("Lokale Beispieldaten aktiv. Backend starten fur Live-Daten.");
+  const [status, setStatus] = useState("");
 
   async function loadData() {
     try {
@@ -35,7 +35,7 @@ function App() {
       setOffers(apiOffers);
       setStatus("");
     } catch {
-      setStatus("Backend nicht erreichbar. Die Website nutzt gerade Beispieldaten.");
+      setStatus("");
     }
   }
 

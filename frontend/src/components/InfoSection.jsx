@@ -2,17 +2,17 @@ function InfoSection() {
   return (
     <section className="info-section">
       <div className="info-content">
-        <h2>EFSEZ – Ihr türkischer Einzelhandel</h2>
+        <h2>EFSEZ - Ihr internationaler Einzelhandel</h2>
 
         <p>
-          Bei EFSEZ finden Sie eine große Auswahl an türkischen Lebensmitteln,
+          Bei EFSEZ finden Sie eine große Auswahl an internationalen Lebensmitteln,
           Spezialitäten, Getränken, Süßwaren und Produkten des täglichen Bedarfs.
         </p>
 
         <div className="info-boxes">
           <div>
             <h3>Großes Sortiment</h3>
-            <p>Viele bekannte Marken und türkische Spezialitäten.</p>
+            <p>Viele bekannte Marken und internationale Spezialitäten.</p>
           </div>
 
           <div>
