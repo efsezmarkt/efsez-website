@@ -162,20 +162,21 @@
 @media (max-width: 950px) {
   .header {
     position: sticky;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    width: calc(100% - 20px);
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     max-width: none;
-    margin: 0 auto;
+    margin: 0;
     background: rgba(8, 76, 48, 0.66);
     backdrop-filter: blur(20px) saturate(1.25);
     grid-template-columns: minmax(0, 1fr) 46px;
     gap: 12px;
     min-height: 62px;
-    padding: 8px 10px 8px 14px;
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 16px;
+    padding: 8px 12px 8px 14px;
+    border: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.14);
+    border-radius: 0;
     text-align: left;
     box-shadow: 0 14px 36px rgba(0,0,0,0.16);
   }
@@ -240,7 +241,7 @@
     z-index: 998;
     display: block;
     border: 0;
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.2);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.22s ease;
@@ -257,18 +258,18 @@
     right: 0;
     bottom: 0;
     z-index: 999;
-    width: min(86vw, 360px);
+    width: min(80vw, 340px);
     display: grid;
     grid-template-columns: 1fr;
     align-content: start;
     gap: 18px;
     padding: 24px 18px 18px;
-    border-left: 1px solid rgba(255,255,255,0.16);
-    border-radius: 22px 0 0 22px;
+    border-left: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px 0 0 18px;
     background:
-      linear-gradient(180deg, rgba(10, 87, 55, 0.98), rgba(6, 62, 39, 0.98));
+      linear-gradient(180deg, #075537, #043a25);
     box-shadow: -24px 0 70px rgba(0,0,0,0.34);
-    backdrop-filter: blur(22px) saturate(1.2);
+    backdrop-filter: none;
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);
@@ -316,13 +317,13 @@
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
     font-size: 1.04rem;
-    background: rgba(255,255,255,0.045);
+    background: rgba(255,255,255,0.075);
   }
 
   .nav-links a.active,
   .nav-links a:hover {
     border-color: rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.14);
   }
 
   .nav-links a.active::after,
@@ -351,14 +352,14 @@
     width: 46px;
     height: 46px;
     border-radius: 12px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.12);
   }
 }
 
 @media (max-width: 420px) {
   .header {
-    top: 8px;
-    width: calc(100% - 16px);
+    top: 0;
+    width: 100%;
     min-height: 60px;
     padding: 10px 12px;
   }
