@@ -3,8 +3,8 @@ function Footer() {
     <footer className="footer">
       <div className="footer-content">
         <div>
-          <h3>EFSE’Z Markt</h3>
-          <p>Ihr Markt für jeden Geschmack.</p>
+          <h3>EFSE&apos;Z Markt</h3>
+          <p>Internationaler Einzelhandel für jeden Geschmack.</p>
         </div>
 
         <div>
@@ -22,7 +22,7 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 EFSE’Z Markt. Alle Rechte vorbehalten.</p>
+        <p>© 2026 EFSE&apos;Z Markt. Alle Rechte vorbehalten.</p>
         <a href="#/admin" className="footer-staff-access">Personalzugang</a>
       </div>
     </footer>

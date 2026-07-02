@@ -1,5 +1,13 @@
+const categoryLabels = {
+  Getranke: "Getränke",
+  "Susswaren": "Süßwaren",
+  Gewurze: "Gewürze",
+  Fruhstuck: "Frühstück",
+};
+
 function ProductCard({ product }) {
   const whatsappText = `Hallo EFSE'Z Markt, ich interessiere mich für ${product.name}.`;
+  const category = categoryLabels[product.category] || product.category;
 
   return (
     <article className="product-card">
@@ -14,7 +22,7 @@ function ProductCard({ product }) {
       </a>
 
       <div className="product-info">
-        <p className="product-category">{product.category}</p>
+        <p className="product-category">{category}</p>
         <h3>
           <a href={`#/product/${product.id}`}>{product.name}</a>
         </h3>

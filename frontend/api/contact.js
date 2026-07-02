@@ -2,7 +2,7 @@ import { ensureSchema, parseBody, requireFields, send, sql } from "./_lib/db.js"
 
 const allowedPurposes = new Set([
   "Produktwunsch",
-  "Produktverfuegbarkeit",
+  "Produktverfügbarkeit",
   "Partneranfrage",
   "Lieferant / Zusammenarbeit",
   "Allgemeine Anfrage"

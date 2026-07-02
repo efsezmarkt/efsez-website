@@ -5,11 +5,12 @@ function ContactSection() {
     <section id="contact" className="contact-section">
       <div className="contact-layout">
         <div className="contact-intro">
-          <p className="section-label">Kontakt</p>
+          <p className="section-label">Filialen</p>
           <h2>Fragen zu Produkten oder Verfügbarkeit?</h2>
           <p>
-            Kontaktieren Sie uns gerne direkt oder besuchen Sie uns vor Ort im
-            EFSE’Z Markt.
+            Kontaktieren Sie uns direkt oder besuchen Sie EFSE&apos;Z Markt vor
+            Ort. Für Produktwünsche, Verfügbarkeit und kurze Rückfragen ist
+            WhatsApp der schnellste Weg.
           </p>
 
           <a className="whatsapp-button" href="https://wa.me/490000000000">
@@ -23,6 +24,7 @@ function ContactSection() {
           <div className="branch-cards">
             {branches.map((branch) => (
               <div className="branch-card" key={branch.id}>
+                <span className="branch-pin" aria-hidden="true" />
                 <h3>{branch.name}</h3>
                 <p>{branch.street}</p>
                 <p>{branch.city}</p>

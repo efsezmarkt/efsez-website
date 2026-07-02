@@ -37,7 +37,7 @@ function Header({ currentPage }) {
       <button
         type="button"
         className="menu-scrim"
-        aria-label="Menu schliessen"
+        aria-label="Menü schließen"
         onClick={closeMenu}
       />
 
@@ -48,7 +48,7 @@ function Header({ currentPage }) {
       <button
         type="button"
         className="menu-toggle"
-        aria-label={menuOpen ? "Menu schliessen" : "Menu offnen"}
+        aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
         aria-expanded={menuOpen}
         aria-controls="main-navigation"
         onClick={() => setMenuOpen((open) => !open)}

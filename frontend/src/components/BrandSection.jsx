@@ -13,8 +13,9 @@ function BrandSection() {
   return (
     <section className="brand-section">
       <div className="section-header">
+        <p className="section-kicker">Regalmarken</p>
         <h2>Beliebte Marken</h2>
-        <p>Bekannte Marken aus unserem Sortiment.</p>
+        <p>Bekannte Marken aus unserem Sortiment, von Tee bis Frühstück.</p>
       </div>
 
       <div className="brand-strip">

@@ -6,6 +6,7 @@ function FeaturedProducts({ products }) {
   return (
     <section className="featured-section">
       <div className="section-header">
+        <p className="section-kicker">Auswahl aus dem Regal</p>
         <h2>Beliebte Produkte</h2>
         <p>Eine kleine Auswahl aus unserem Sortiment.</p>
       </div>

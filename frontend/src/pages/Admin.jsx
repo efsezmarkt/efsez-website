@@ -294,7 +294,7 @@ function Admin({ products, offers, onRefresh }) {
         <form className="access-panel" onSubmit={submitAccess}>
           <p className="admin-kicker">Personalzugang</p>
           <h2>Zugangscode erforderlich</h2>
-          <p>Dieser Bereich ist nur fuer Mitarbeitende. Nach der Anmeldung koennen Produkte, Bilder und Angebote gepflegt werden.</p>
+          <p>Dieser Bereich ist nur für Mitarbeitende. Nach der Anmeldung können Produkte, Bilder und Angebote gepflegt werden.</p>
 
           <label>
             Zugangscode

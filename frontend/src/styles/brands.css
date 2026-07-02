@@ -1,41 +1,55 @@
 .brand-section {
-  padding: 100px 50px;
-
+  position: relative;
+  padding: 96px 50px;
   background:
-    linear-gradient(
-      to bottom,
-      #ffffff,
-      #f8f6f1
-    );
+    linear-gradient(180deg, #ffffff 0%, #f7f3ea 100%);
 }
 
 .brand-strip {
-  max-width: 1100px;
+  max-width: 1080px;
   margin: auto;
-
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .brand-pill {
-  padding: 16px 28px;
-  border-radius: 8px;
-
-  background: var(--background);
+  min-width: 116px;
+  padding: 15px 22px;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 239, 225, 0.96));
   color: var(--primary-green);
-
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 900;
-
-  border: 1px solid rgba(13, 92, 58, 0.08);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.05);
-  transition: 0.2s;
+  text-align: center;
+  box-shadow:
+    0 12px 26px rgba(35, 42, 34, 0.07),
+    inset 0 0 0 1px rgba(13, 92, 58, 0.08);
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
 }
 
 .brand-pill:hover {
   background: var(--primary-green);
   color: white;
   transform: translateY(-4px);
+}
+
+@media (max-width: 640px) {
+  .brand-section {
+    padding: 70px 14px;
+  }
+
+  .brand-strip {
+    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .brand-pill {
+    min-width: 0;
+    padding: 13px 14px;
+    font-size: 0.95rem;
+  }
 }

@@ -36,6 +36,7 @@ function Home({ products, offers }) {
 
         <div className="hero-inner">
           <div className="hero-text">
+            <p className="hero-eyebrow">EFSE&apos;Z Markt Nürnberg</p>
             <h2>
               International frisch.
               <span>Direkt um die Ecke.</span>
@@ -52,6 +53,12 @@ function Home({ products, offers }) {
               jeden Einkauf ein bisschen besonderer macht.
             </p>
 
+            <div className="hero-badges" aria-label="Sortimentsbereiche">
+              <span>Frische Theke</span>
+              <span>Internationale Marken</span>
+              <span>Wochenangebote</span>
+            </div>
+
             <div className="hero-buttons">
               <a href="#/products" className="btn-primary">Sortiment ansehen</a>
               <a href="#/" onClick={scrollToOffers} className="btn-secondary">Wochenangebote</a>
@@ -61,6 +68,10 @@ function Home({ products, offers }) {
           <div className="hero-visual">
             <div className="hero-logo-card">
               <img src="/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
+            </div>
+            <div className="hero-assortment-note">
+              <span>Heute im Regal</span>
+              <strong>Tee, Sucuk, Oliven, Baklava</strong>
             </div>
           </div>
         </div>

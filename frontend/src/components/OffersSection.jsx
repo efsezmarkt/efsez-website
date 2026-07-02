@@ -6,8 +6,9 @@ function OffersSection({ offers }) {
   return (
     <section id="offers" className="offers-section">
       <div className="section-header">
+        <p className="section-kicker">Diese Woche</p>
         <h2>Aktuelle Angebote</h2>
-        <p>Vom Inhaber gepflegt und direkt auf der Website sichtbar.</p>
+        <p>Vom Team gepflegt und direkt auf der Website sichtbar.</p>
       </div>
 
       <div className="offers-grid">

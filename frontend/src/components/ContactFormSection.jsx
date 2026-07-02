@@ -3,7 +3,7 @@ import { api } from "../api";
 
 const inquiryTypes = [
   "Produktwunsch",
-  "Produktverfuegbarkeit",
+  "Produktverfügbarkeit",
   "Partneranfrage",
   "Lieferant / Zusammenarbeit",
   "Allgemeine Anfrage"
@@ -46,8 +46,8 @@ function ContactFormSection({ page = false }) {
           <p className="section-label">Kontakt</p>
           <h2>Produktwunsch, Partnerschaft oder kurze Frage?</h2>
           <p>
-            Fuer Produktanfragen, Lieferanten, Kooperationen oder allgemeine Anliegen
-            koennen Sie EFSE'Z Markt direkt ueber dieses Formular erreichen.
+            Für Produktanfragen, Lieferanten, Kooperationen oder allgemeine Anliegen
+            können Sie EFSE&apos;Z Markt direkt über dieses Formular erreichen.
           </p>
         </div>
 

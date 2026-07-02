@@ -1,3 +1,10 @@
+const categoryLabels = {
+  Getranke: "Getränke",
+  Susswaren: "Süßwaren",
+  Gewurze: "Gewürze",
+  Fruhstuck: "Frühstück",
+};
+
 function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
   return (
     <div className="category-filter">
@@ -14,7 +21,7 @@ function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
           className={selectedCategory === category ? "active" : ""}
           onClick={() => onSelectCategory(category)}
         >
-          {category}
+          {categoryLabels[category] || category}
         </button>
       ))}
     </div>

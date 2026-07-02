@@ -33,6 +33,7 @@ function Products({ products }) {
       </div>
 
       <div className="section-header">
+        <p className="section-kicker">Katalog</p>
         <h2>Produktkatalog</h2>
         <p>Suchen und filtern Sie unser Sortiment.</p>
       </div>
@@ -76,7 +77,7 @@ function Products({ products }) {
           Unser Sortiment wird regelmäßig erweitert. Fragen Sie einfach direkt bei uns nach.
         </p>
 
-        <a href="#contact">Kontakt aufnehmen</a>
+        <a href="#/contact">Kontakt aufnehmen</a>
       </div>
     </section>
   );

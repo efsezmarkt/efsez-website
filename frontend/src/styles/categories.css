@@ -1,82 +1,162 @@
 .categories-section {
-  padding: 100px 50px;
-  background: var(--background);
+  position: relative;
+  padding: 104px 50px 112px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(232, 109, 31, 0.08), transparent 26%),
+    linear-gradient(180deg, var(--background) 0%, #fffdf8 100%);
+}
+
+.categories-section::before {
+  content: "";
+  position: absolute;
+  inset: 28px 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(13, 92, 58, 0.14), transparent);
 }
 
 .categories-grid {
-  max-width: 1150px;
+  max-width: 1180px;
   margin: auto;
-
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 22px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .category-card {
   position: relative;
-  min-height: 145px;
-  border-radius: 24px;
-
+  min-height: 222px;
+  padding: 14px 14px 18px;
+  border-radius: 14px;
   background:
-    linear-gradient(145deg, #ffffff, #f2eee6);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-
-  text-align: center;
-  font-weight: 900;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(250, 246, 237, 0.96));
   color: var(--primary-green);
-
-  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-  border: 1px solid rgba(13,92,58,0.08);
-
+  text-align: left;
+  box-shadow:
+    0 18px 34px rgba(35, 42, 34, 0.08),
+    inset 0 0 0 1px rgba(13, 92, 58, 0.08);
   overflow: hidden;
-  transition: 0.25s;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
-.category-card::before {
+.category-card::after {
   content: "";
   position: absolute;
-  width: 90px;
-  height: 90px;
-  right: -25px;
-  top: -25px;
-
-  background: rgba(13,92,58,0.08);
-  border-radius: 50%;
+  right: 12px;
+  bottom: 12px;
+  width: 34px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(232, 109, 31, 0.5);
 }
 
 .category-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 38px rgba(0,0,0,0.12);
-  border-color: var(--accent-orange);
+  transform: translateY(-6px);
+  box-shadow:
+    0 24px 42px rgba(35, 42, 34, 0.12),
+    inset 0 0 0 1px rgba(232, 109, 31, 0.25);
 }
 
-.category-icon {
-  font-size: 2.4rem;
+.category-image-stack {
+  position: relative;
+  height: 120px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.98), transparent 42%),
+    linear-gradient(145deg, #f6efe1, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.category-image-stack::before {
+  content: "";
+  position: absolute;
+  inset: auto 14px 12px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(35, 42, 34, 0.09);
+  filter: blur(5px);
+}
+
+.category-image-stack img {
+  position: relative;
   z-index: 1;
+  width: 82%;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 14px rgba(24, 38, 28, 0.16));
 }
 
-.category-card span:last-child {
+.category-image-stack.has-pair img {
+  width: 60%;
+}
+
+.category-image-stack.has-pair img:first-child {
+  transform: translateX(12px) rotate(-5deg);
+}
+
+.category-image-stack.has-pair img:last-child {
+  margin-left: -34px;
+  transform: translateX(-8px) rotate(6deg);
+}
+
+.category-name {
+  position: relative;
   z-index: 1;
-  font-size: 1rem;
+  display: block;
+  font-size: 1.02rem;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
-@media (max-width: 950px) {
+.category-card small {
+  display: block;
+  margin-top: 6px;
+  color: #657068;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+@media (max-width: 1050px) {
   .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 700px) {
   .categories-section {
-    padding: 80px 24px;
+    padding: 70px 14px 74px;
   }
-}
 
-@media (max-width: 520px) {
   .categories-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .category-card {
+    min-height: 174px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .category-image-stack {
+    height: 94px;
+    margin-bottom: 10px;
+    border-radius: 9px;
+  }
+
+  .category-image-stack img {
+    height: 76px;
+  }
+
+  .category-name {
+    font-size: 0.88rem;
+  }
+
+  .category-card small {
+    font-size: 0.7rem;
   }
 }
