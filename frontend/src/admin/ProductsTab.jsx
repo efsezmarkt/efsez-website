@@ -4,6 +4,7 @@ import ProductImage from "../components/ProductImage";
 import { formatPrice } from "../lib/format";
 import { Field, ImageField, Toggle } from "./ui";
 import { confirmAction, parsePrice, priceText } from "./util";
+import CareMode from "./CareMode";
 
 const PAGE = 40;
 const EMPTY = {
@@ -20,6 +21,7 @@ function ProductsTab({ categories, notify, refresh }) {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(() => new Set());
   const [form, setForm] = useState(null);
+  const [care, setCare] = useState(false);
   const request = useRef(0);
 
   useEffect(() => {
@@ -173,7 +175,8 @@ function ProductsTab({ categories, notify, refresh }) {
       tags: form.tags.trim(),
       visible: form.visible,
       featured: form.featured,
-      available: form.available
+      available: form.available,
+      reviewed_at: new Date().toISOString()
     };
     try {
       if (form.id) check(await supabase.from("products").update(payload).eq("id", form.id));
@@ -201,6 +204,20 @@ function ProductsTab({ categories, notify, refresh }) {
   }
 
   const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event?.target ? event.target.value : event }));
+
+  if (care) {
+    return (
+      <CareMode
+        categories={categories}
+        notify={notify}
+        refresh={refresh}
+        onExit={() => {
+          setCare(false);
+          load(0);
+        }}
+      />
+    );
+  }
 
   if (form) {
     return (
@@ -299,6 +316,11 @@ function ProductsTab({ categories, notify, refresh }) {
 
   return (
     <div className="a-stack">
+      <button type="button" className="a-care-start" onClick={() => setCare(true)}>
+        <strong>Pflegemodus starten</strong>
+        <span>Ein Produkt nach dem anderen: Foto, Preis, Name prüfen – es geht dort weiter, wo zuletzt aufgehört wurde.</span>
+      </button>
+
       <div className="a-filters">
         <input type="search" placeholder="Name, Marke oder Barcode" value={search} onChange={(event) => setSearch(event.target.value)} />
         <select value={filter.categoryId} onChange={(event) => setFilter((current) => ({ ...current, categoryId: event.target.value }))}>
