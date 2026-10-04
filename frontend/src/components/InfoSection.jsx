@@ -5,7 +5,7 @@ const highlights = [
   },
   {
     title: "Produktübersicht",
-    text: "Der digitale Katalog zeigt ausgewählte Produkte und bereitet spätere Bestandsdaten vor.",
+    text: "Der digitale Katalog zeigt unser Sortiment mit Preisen – zum Stöbern und Anfragen, ohne Online-Bestellung.",
   },
   {
     title: "Direkter Kontakt",

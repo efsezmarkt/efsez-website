@@ -2,6 +2,7 @@ import CategoryGrid from "../components/CategoryGrid";
 import FeaturedProducts from "../components/FeaturedProducts";
 import ProductCarousel from "../components/ProductCarousel";
 import OffersSection from "../components/OffersSection";
+import DealCard from "../components/DealCard";
 import InfoSection from "../components/InfoSection";
 import ContactSection from "../components/ContactSection";
 import ContactFormSection from "../components/ContactFormSection";
@@ -14,12 +15,17 @@ import "../styles/categories.css";
 import "../styles/products.css";
 import "../styles/info.css";
 
-function Home({ products, offers }) {
+function Home({ featured, offers, categories, settings, productTotal }) {
   const scrollToOffers = () => {
     window.setTimeout(() => {
       document.getElementById("offers")?.scrollIntoView({ behavior: "smooth" });
     }, 0);
   };
+
+  // Die ersten zwei Angebotspositionen wandern als Blickfang in den Hero.
+  const allDeals = offers.flatMap((offer) => offer.items);
+  const heroDeals = [...allDeals.filter((item) => item.offer_price !== null), ...allDeals.filter((item) => item.offer_price === null)].slice(0, 2);
+  const categoryImages = Object.fromEntries(categories.map((category) => [category.name, category.image]));
 
   return (
     <>
@@ -61,33 +67,49 @@ function Home({ products, offers }) {
 
             <div className="hero-buttons">
               <a href="#/products" className="btn-primary">Sortiment ansehen</a>
-              <a href="#/" onClick={scrollToOffers} className="btn-secondary">Wochenangebote</a>
+              {offers.length > 0 && (
+                <a href="#/" onClick={scrollToOffers} className="btn-secondary">Wochenangebote</a>
+              )}
             </div>
           </div>
 
           <div className="hero-visual">
-            <div className="hero-logo-card">
-              <img src="/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
-            </div>
-            <div className="hero-assortment-note">
-              <span>Heute im Regal</span>
-              <strong>Tee, Sucuk, Oliven, Baklava</strong>
-            </div>
+            {heroDeals.length > 0 ? (
+              <div className="hero-deals">
+                <div className="hero-deals-title">
+                  <span>Angebot der Woche</span>
+                  <a href="#/" onClick={scrollToOffers}>Alle Angebote</a>
+                </div>
+                {heroDeals.map((item) => (
+                  <DealCard key={item.id} item={item} categoryImage={categoryImages[item.category] || ""} compact />
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="hero-logo-card">
+                  <img src="/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
+                </div>
+                <div className="hero-assortment-note">
+                  <span>Heute im Regal</span>
+                  <strong>Tee, Sucuk, Oliven, Baklava</strong>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
-        <ProductCarousel products={products} />
+        <ProductCarousel products={featured} />
         <div className="hero-wave"></div>
       </section>
 
-      <OffersSection offers={offers} />
-      <StatsSection />
-      <CategoryGrid />
-      <FeaturedProducts products={products} />
+      <OffersSection offers={offers} categories={categories} />
+      <StatsSection productTotal={productTotal} settings={settings} />
+      <CategoryGrid categories={categories} />
+      <FeaturedProducts products={featured} categories={categories} settings={settings} />
       <BrandSection />
       <InfoSection />
       <ContactFormSection />
-      <ContactSection />
+      <ContactSection settings={settings} />
     </>
   );
 }

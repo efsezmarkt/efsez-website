@@ -2,11 +2,11 @@ import ContactFormSection from "../components/ContactFormSection";
 import ContactSection from "../components/ContactSection";
 import "../styles/contact.css";
 
-function Contact() {
+function Contact({ settings }) {
   return (
     <>
       <ContactFormSection page />
-      <ContactSection />
+      <ContactSection settings={settings} />
     </>
   );
 }

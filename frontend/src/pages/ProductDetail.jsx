@@ -1,22 +1,63 @@
+import { useCallback, useEffect, useState } from "react";
+import { api } from "../api";
 import ProductCard from "../components/ProductCard";
+import ProductImage from "../components/ProductImage";
+import { formatPrice, whatsappLink } from "../lib/site";
 import "../styles/productDetail.css";
 
-function ProductDetail({ product, products }) {
-  if (!product) {
+function ProductDetail({ id, settings }) {
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [state, setState] = useState("loading");
+
+  const load = useCallback(async (isCancelled) => {
+    setState("loading");
+    setProduct(null);
+    setRelated([]);
+    try {
+      const loaded = await api.getProduct(id);
+      if (isCancelled()) return;
+      setProduct(loaded);
+      setState("ready");
+      try {
+        const result = await api.getProducts({ category: loaded.category, limit: 4 });
+        if (!isCancelled()) setRelated(result.items.filter((item) => item.id !== loaded.id).slice(0, 3));
+      } catch {
+        /* verwandte Produkte sind optional */
+      }
+    } catch {
+      if (!isCancelled()) setState("missing");
+    }
+  }, [id]);
+
+  useEffect(() => {
+    let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load(() => cancelled);
+    return () => {
+      cancelled = true;
+    };
+  }, [load]);
+
+  if (state === "loading") {
+    return (
+      <section className="detail-section">
+        <div className="detail-empty"><p>Produkt wird geladen...</p></div>
+      </section>
+    );
+  }
+
+  if (state === "missing" || !product) {
     return (
       <section className="detail-section">
         <div className="detail-empty">
           <h1>Produkt nicht gefunden</h1>
           <p>Das Produkt ist aktuell nicht im Katalog vorhanden.</p>
-          <a href="#/products">Zuruck zum Sortiment</a>
+          <a href="#/products">Zurück zum Sortiment</a>
         </div>
       </section>
     );
   }
-
-  const relatedProducts = products
-    .filter((item) => item.id !== product.id && item.category === product.category)
-    .slice(0, 3);
 
   const infoItems = [
     ["Marke", product.brand],
@@ -24,25 +65,37 @@ function ProductDetail({ product, products }) {
     ["Einheit", product.unit],
     ["Herkunft", product.origin],
     ["Allergene", product.allergens],
-    ["Barcode / SKU", product.barcode]
+    ["Barcode", product.barcode]
   ].filter(([, value]) => value);
 
+  const price = formatPrice(product.price);
   const whatsappText = `Hallo EFSE'Z Markt, ich habe eine Frage zu ${product.name}.`;
 
   return (
     <section className="detail-section">
-      <a className="back-link" href="#/products">Zuruck zum Sortiment</a>
+      <a className="back-link" href={`#/products?kategorie=${encodeURIComponent(product.category)}`}>
+        Zurück zu {product.category}
+      </a>
 
       <div className="detail-layout">
         <div className="detail-image">
-          <img src={product.image} alt={product.name} />
+          <ProductImage product={product} />
         </div>
 
         <div className="detail-content">
           <p className="detail-category">{product.category}</p>
           <h1>{product.name}</h1>
-          <p className="detail-brand">{product.brand}</p>
-          <p className="detail-description">{product.description}</p>
+          {product.brand && <p className="detail-brand">{product.brand}</p>}
+
+          {(price || product.unit) && (
+            <div className="detail-price-row">
+              {price && <strong>{price}</strong>}
+              {product.unit && <span>{product.unit}</span>}
+              {!product.available && <em>Aktuell nicht verfügbar</em>}
+            </div>
+          )}
+
+          {product.description && <p className="detail-description">{product.description}</p>}
 
           {product.details && (
             <div className="detail-copy">
@@ -51,35 +104,35 @@ function ProductDetail({ product, products }) {
             </div>
           )}
 
-          <div className="detail-info-grid">
-            {infoItems.map(([label, value]) => (
-              <div className="detail-info-item" key={label}>
-                <span>{label}</span>
-                <strong>{value}</strong>
-              </div>
-            ))}
-          </div>
+          {infoItems.length > 0 && (
+            <div className="detail-info-grid">
+              {infoItems.map(([label, value]) => (
+                <div className="detail-info-item" key={label}>
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="detail-actions">
-            <a
-              className="detail-whatsapp"
-              href={`https://wa.me/490000000000?text=${encodeURIComponent(whatsappText)}`}
-            >
+            <a className="detail-whatsapp" href={whatsappLink(settings, whatsappText)}>
               Per WhatsApp anfragen
             </a>
           </div>
+          <p className="detail-note">Preise gelten im Markt und können sich ändern. Keine Online-Bestellung.</p>
         </div>
       </div>
 
-      {relatedProducts.length > 0 && (
+      {related.length > 0 && (
         <div className="related-section">
           <div className="section-header">
-            <h2>Ahnliche Produkte</h2>
+            <h2>Ähnliche Produkte</h2>
             <p>Weitere Artikel aus derselben Kategorie.</p>
           </div>
           <div className="products-grid">
-            {relatedProducts.map((item) => (
-              <ProductCard product={item} key={item.id} />
+            {related.map((item) => (
+              <ProductCard product={item} key={item.id} settings={settings} />
             ))}
           </div>
         </div>

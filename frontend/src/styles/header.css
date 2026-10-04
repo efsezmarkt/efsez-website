@@ -274,14 +274,17 @@
     overflow: hidden;
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
     transform: translateX(100%);
-    transition: opacity 0.22s ease, transform 0.22s ease;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
   }
 
   .header-menu.open {
     opacity: 1;
     pointer-events: auto;
+    visibility: visible;
     transform: translateX(0);
+    transition-delay: 0s;
   }
 
   .header-menu::before {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -7,38 +7,53 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Admin from "./pages/Admin";
-import { products as fallbackProducts } from "./data/products";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import { DEFAULT_SETTINGS } from "./lib/site";
 import "./styles/header.css";
 import "./styles/footer.css";
 import "./styles/floatingWhatsApp.css";
 import "./styles/offers.css";
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
 
 function parseRoute(hash) {
   const cleanHash = hash.replace(/^#\/?/, "");
-  const [page = "home", id] = cleanHash.split("/");
-  return { page: page || "home", id: id ? Number(id) : null };
+  const [pagePart = "home", id] = cleanHash.split("/");
+  const [page, search] = pagePart.split("?");
+  return {
+    page: page || "home",
+    id: id ? Number(id) : null,
+    params: new URLSearchParams(search || "")
+  };
 }
 
 function App() {
-  const [products, setProducts] = useState(fallbackProducts);
-  const [offers, setOffers] = useState([]);
   const [route, setRoute] = useState(() => parseRoute(window.location.hash));
-  const [status, setStatus] = useState("");
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [categories, setCategories] = useState([]);
+  const [offers, setOffers] = useState([]);
+  const [featured, setFeatured] = useState([]);
+  const [productTotal, setProductTotal] = useState(null);
 
-  async function loadData() {
-    try {
-      const [apiProducts, apiOffers] = await Promise.all([
-        api.getProducts(),
-        api.getOffers()
-      ]);
-      setProducts(apiProducts);
-      setOffers(apiOffers);
-      setStatus("");
-    } catch {
-      setStatus("");
+  const loadSite = useCallback(async () => {
+    const results = await Promise.allSettled([
+      api.getSettings(),
+      api.getCategories(),
+      api.getOffers(),
+      api.getProducts({ featured: 1, limit: 12 })
+    ]);
+    const [settingsResult, categoriesResult, offersResult, featuredResult] = results;
+    if (settingsResult.status === "fulfilled") setSettings({ ...DEFAULT_SETTINGS, ...settingsResult.value });
+    if (categoriesResult.status === "fulfilled") setCategories(categoriesResult.value);
+    if (offersResult.status === "fulfilled") setOffers(offersResult.value);
+    if (featuredResult.status === "fulfilled") {
+      setFeatured(featuredResult.value.items);
     }
-  }
+    try {
+      const all = await api.getProducts({ limit: 1 });
+      setProductTotal(all.total);
+    } catch {
+      setProductTotal(null);
+    }
+  }, []);
 
   useEffect(() => {
     function handleHashChange() {
@@ -51,38 +66,36 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Initial API sync for storefront, admin area, and later automation-driven data.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadData();
-  }, []);
-
-  const selectedProduct = useMemo(
-    () => products.find((product) => product.id === route.id),
-    [products, route.id]
-  );
+    loadSite();
+  }, [loadSite]);
 
   return (
     <>
-      <Header currentPage={route.page} />
+      <Header currentPage={route.page} settings={settings} />
 
       <main>
-        {status && <div className="app-status">{status}</div>}
-
         {route.page === "products" ? (
-          <Products products={products} />
+          <Products categories={categories} settings={settings} initialCategory={route.params.get("kategorie") || "Alle"} />
         ) : route.page === "product" ? (
-          <ProductDetail product={selectedProduct} products={products} />
+          <ProductDetail id={route.id} settings={settings} />
         ) : route.page === "admin" ? (
-          <Admin products={products} offers={offers} onRefresh={loadData} />
+          <Admin onRefresh={loadSite} />
         ) : route.page === "contact" ? (
-          <Contact />
+          <Contact settings={settings} />
         ) : (
-          <Home products={products} offers={offers} />
+          <Home
+            featured={featured}
+            offers={offers}
+            categories={categories}
+            settings={settings}
+            productTotal={productTotal}
+          />
         )}
       </main>
 
-      <Footer />
-      <FloatingWhatsApp />
+      <Footer settings={settings} />
+      <FloatingWhatsApp settings={settings} />
     </>
   );
 }

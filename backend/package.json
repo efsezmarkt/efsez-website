@@ -1,15 +1,13 @@
 {
   "name": "efsez-backend",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js"
   },
-  "description": "Local EFSEZ API for development. Production uses Vercel Functions in frontend/api.",
+  "description": "Lokaler Dev-Server: fährt die Vercel-Funktionen aus frontend/api gegen eine lokale Postgres (LOCAL_PG=1). Produktion = Vercel + Neon.",
   "main": "server.js",
-  "keywords": [],
-  "author": "",
   "license": "ISC"
 }

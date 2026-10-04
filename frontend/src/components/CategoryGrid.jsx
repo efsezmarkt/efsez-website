@@ -1,57 +1,7 @@
-const categories = [
-  {
-    name: "Getränke",
-    description: "Ayran, Tee, Säfte",
-    images: ["/assets/products/yayla-ayran.png", "/assets/products/caykur-rize-tee.png"],
-  },
-  {
-    name: "Süßwaren",
-    description: "Baklava, Kekse, Schokolade",
-    images: ["/assets/products/baklava-pistazie.png"],
-  },
-  {
-    name: "Milchprodukte",
-    description: "Ayran, Joghurt, Frische",
-    images: ["/assets/products/yayla-ayran.png"],
-  },
-  {
-    name: "Käse",
-    description: "Weichkäse, Schnittkäse",
-    images: ["/assets/categories/kaese.jpg"],
-  },
-  {
-    name: "Fleischwaren",
-    description: "Sucuk und Kühltheke",
-    images: ["/assets/products/efepasa-sucuk.png"],
-  },
-  {
-    name: "Gewürze",
-    description: "Paprika, Chili, Kräuter",
-    images: ["/assets/products/bagdat-pul-biber.png"],
-  },
-  {
-    name: "Konserven",
-    description: "Oliven, Gläser, Vorrat",
-    images: ["/assets/products/sera-gruene-oliven.png"],
-  },
-  {
-    name: "Frühstück",
-    description: "Tahin, Pekmez, Aufstriche",
-    images: ["/assets/products/koska-tahin.png", "/assets/products/koska-pekmez.png"],
-  },
-  {
-    name: "Nudeln & Reis",
-    description: "Bulgur, Reis, Beilagen",
-    images: ["/assets/products/duru-bulgur.png"],
-  },
-  {
-    name: "Tiefkühlprodukte",
-    description: "Gemüse, Teigwaren, Vorrat",
-    images: ["/assets/categories/tiefkuehl.jpg"],
-  },
-];
+function CategoryGrid({ categories }) {
+  const shown = categories.filter((category) => category.product_count > 0).slice(0, 12);
+  if (!shown.length) return null;
 
-function CategoryGrid() {
   return (
     <section className="categories-section">
       <div className="section-header">
@@ -61,16 +11,22 @@ function CategoryGrid() {
       </div>
 
       <div className="categories-grid">
-        {categories.map((category) => (
-          <div className="category-card" key={category.name}>
-            <div className={`category-image-stack ${category.images.length > 1 ? "has-pair" : ""}`}>
-              {category.images.map((image) => (
-                <img src={image} alt={`${category.name} Produkt`} key={image} />
-              ))}
+        {shown.map((category) => (
+          <a
+            className="category-card"
+            key={category.id}
+            href={`#/products?kategorie=${encodeURIComponent(category.name)}`}
+          >
+            <div className="category-image-stack">
+              {category.image ? (
+                <img src={category.image} alt={`${category.name}`} loading="lazy" />
+              ) : (
+                <span className="category-initial" aria-hidden="true">{category.name.charAt(0)}</span>
+              )}
             </div>
             <span className="category-name">{category.name}</span>
-            <small>{category.description}</small>
-          </div>
+            <small>{category.description || `${category.product_count} Produkte`}</small>
+          </a>
         ))}
       </div>
     </section>

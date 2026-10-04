@@ -1,27 +1,27 @@
-const categoryLabels = {
-  Getranke: "Getränke",
-  Susswaren: "Süßwaren",
-  Gewurze: "Gewürze",
-  Fruhstuck: "Frühstück",
-};
-
-function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
+function CategoryFilter({ categories, selectedCategory, onSelectCategory, total }) {
   return (
-    <div className="category-filter">
+    <div className="category-filter" role="tablist" aria-label="Kategorien">
       <button
+        type="button"
+        role="tab"
+        aria-selected={selectedCategory === "Alle"}
         className={selectedCategory === "Alle" ? "active" : ""}
         onClick={() => onSelectCategory("Alle")}
       >
-        Alle
+        Alle{typeof total === "number" ? <small>{total}</small> : null}
       </button>
 
       {categories.map((category) => (
         <button
-          key={category}
-          className={selectedCategory === category ? "active" : ""}
-          onClick={() => onSelectCategory(category)}
+          type="button"
+          role="tab"
+          key={category.id || category.name}
+          aria-selected={selectedCategory === category.name}
+          className={selectedCategory === category.name ? "active" : ""}
+          onClick={() => onSelectCategory(category.name)}
         >
-          {categoryLabels[category] || category}
+          {category.name}
+          {typeof category.product_count === "number" ? <small>{category.product_count}</small> : null}
         </button>
       ))}
     </div>

@@ -16,7 +16,7 @@ export const seedProducts = [
   },
   {
     name: "Efepasa Sucuk",
-    category: "Fleischwaren",
+    category: "Wurst & Fleischwaren",
     brand: "Efepasa",
     description: "Würzige türkische Knoblauchwurst, ideal zum Braten, Frühstück oder Grillen.",
     image: "/assets/products/efepasa-sucuk.png",
@@ -31,7 +31,7 @@ export const seedProducts = [
   },
   {
     name: "Baklava mit Pistazien",
-    category: "Süßwaren",
+    category: "Süßwaren & Snacks",
     brand: "Hausgemacht",
     description: "Traditionelles Gebäck mit feinen Pistazien und dünnen Teigschichten.",
     image: "/assets/products/baklava-pistazie.png",
@@ -46,7 +46,7 @@ export const seedProducts = [
   },
   {
     name: "Sera Grüne Oliven",
-    category: "Konserven",
+    category: "Konserven & Vorrat",
     brand: "Sera",
     description: "Eingelegte grüne Oliven nach türkischer Art, aromatisch und mild.",
     image: "/assets/products/sera-gruene-oliven.png",
@@ -61,7 +61,7 @@ export const seedProducts = [
   },
   {
     name: "Bağdat Pul Biber",
-    category: "Gewürze",
+    category: "Gewürze & Würzpasten",
     brand: "Bağdat",
     description: "Türkische Chiliflocken, scharf und aromatisch für viele Gerichte.",
     image: "/assets/products/bagdat-pul-biber.png",
@@ -76,7 +76,7 @@ export const seedProducts = [
   },
   {
     name: "Yayla Ayran",
-    category: "Milchprodukte",
+    category: "Milchprodukte & Käse",
     brand: "Yayla",
     description: "Erfrischendes Joghurtgetränk, passend zu warmen Speisen oder unterwegs.",
     image: "/assets/products/yayla-ayran.png",
@@ -91,7 +91,7 @@ export const seedProducts = [
   },
   {
     name: "Koska Tahin",
-    category: "Frühstück",
+    category: "Frühstück & Aufstriche",
     brand: "Koska",
     description: "Fein gemahlene Sesampaste, ideal für Frühstück und Süßspeisen.",
     image: "/assets/products/koska-tahin.png",
@@ -106,7 +106,7 @@ export const seedProducts = [
   },
   {
     name: "Koska Pekmez",
-    category: "Frühstück",
+    category: "Frühstück & Aufstriche",
     brand: "Koska",
     description: "Traditioneller Traubensirup, süß und natürlich im Geschmack.",
     image: "/assets/products/koska-pekmez.png",
@@ -121,7 +121,7 @@ export const seedProducts = [
   },
   {
     name: "Duru Bulgur",
-    category: "Nudeln & Reis",
+    category: "Nudeln, Reis & Getreide",
     brand: "Duru",
     description: "Klassischer Bulgur für türkische Gerichte, Salate und Beilagen.",
     image: "/assets/products/duru-bulgur.png",
@@ -145,3 +145,27 @@ export const seedOffer = {
   ends_at: "",
   active: true
 };
+
+export const seedCategories = [
+  { name: "Obst & Gemüse", description: "Frisch vom Markt", image: "", sort_order: 10 },
+  { name: "Frische Theke", description: "Fleisch, Geflügel, Fisch", image: "", sort_order: 20 },
+  { name: "Brot & Backwaren", description: "Brot, Fladen, Backzutaten", image: "", sort_order: 30 },
+  { name: "Milchprodukte & Käse", description: "Ayran, Joghurt, Käse", image: "/assets/categories/kaese.jpg", sort_order: 40 },
+  { name: "Wurst & Fleischwaren", description: "Sucuk, Salami, Würstchen", image: "/assets/products/efepasa-sucuk.png", sort_order: 50 },
+  { name: "Oliven & Eingelegtes", description: "Oliven, Tursu, Feinkost", image: "/assets/products/sera-gruene-oliven.png", sort_order: 60 },
+  { name: "Gewürze & Würzpasten", description: "Paprika, Chili, Pasten", image: "/assets/products/bagdat-pul-biber.png", sort_order: 70 },
+  { name: "Nudeln, Reis & Getreide", description: "Bulgur, Reis, Hülsenfrüchte", image: "/assets/products/duru-bulgur.png", sort_order: 80 },
+  { name: "Konserven & Vorrat", description: "Gläser, Dosen, Fixprodukte", image: "", sort_order: 90 },
+  { name: "Öle, Essig & Soßen", description: "Olivenöl, Dressings, Ketchup", image: "", sort_order: 100 },
+  { name: "Frühstück & Aufstriche", description: "Tahin, Pekmez, Honig, Marmelade", image: "/assets/products/koska-tahin.png", sort_order: 110 },
+  { name: "Süßwaren & Snacks", description: "Baklava, Kekse, Halva", image: "/assets/products/baklava-pistazie.png", sort_order: 120 },
+  { name: "Nüsse & Trockenfrüchte", description: "Nüsse, Kerne, Datteln", image: "", sort_order: 130 },
+  { name: "Kaffee & Tee", description: "Çay, Mokka, Instant", image: "/assets/products/caykur-rize-tee.png", sort_order: 140 },
+  { name: "Getränke", description: "Säfte, Wasser, Limonaden", image: "/assets/products/yayla-ayran.png", sort_order: 150 },
+  { name: "Tiefkühl", description: "Teigwaren, Gemüse, Vorrat", image: "/assets/categories/tiefkuehl.jpg", sort_order: 160 },
+  { name: "Internationale Spezialitäten", description: "Griechisch, Balkan, Asiatisch", image: "", sort_order: 170 },
+  { name: "Drogerie & Haushalt", description: "Pflege, Putzen, Waschen", image: "", sort_order: 180 },
+  { name: "Geschenke & Haushalt", description: "Tischdecken, Geschenkartikel", image: "", sort_order: 190 },
+  { name: "Lebensmittel", description: "Weitere Lebensmittel", image: "", sort_order: 200 },
+  { name: "Sonstiges", description: "Alles Weitere", image: "", sort_order: 900 }
+];

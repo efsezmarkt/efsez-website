@@ -1,114 +1,66 @@
-import { useMemo, useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
+import AdminOffers from "../admin/AdminOffers";
+import AdminProducts from "../admin/AdminProducts";
+import AdminCategories from "../admin/AdminCategories";
+import AdminImport from "../admin/AdminImport";
+import AdminRequests from "../admin/AdminRequests";
+import AdminSettings from "../admin/AdminSettings";
 import "../styles/admin.css";
 
-const emptyProduct = {
-  name: "",
-  category: "",
-  brand: "",
-  description: "",
-  details: "",
-  unit: "",
-  origin: "",
-  allergens: "",
-  barcode: "",
-  tags: "",
-  image: "",
-  featured: false,
-  available: true
-};
+const TABS = [
+  { id: "offers", label: "Angebote" },
+  { id: "products", label: "Produkte" },
+  { id: "categories", label: "Kategorien" },
+  { id: "requests", label: "Anfragen" },
+  { id: "import", label: "Kassen-Import" },
+  { id: "settings", label: "Einstellungen" }
+];
 
-const emptyOffer = {
-  title: "",
-  description: "",
-  price: "",
-  image: "",
-  starts_at: "",
-  ends_at: "",
-  active: true
-};
-
-function sanitizeFileName(name) {
-  return name
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9._-]/g, "");
-}
-
-function ImagePreview({ src, label }) {
-  if (!src) return null;
-
-  return (
-    <div className="image-preview">
-      <span>{label}</span>
-      <img src={src} alt="" loading="lazy" />
-    </div>
-  );
-}
-
-function ImageUploadField({ label, value, uploading, onUpload }) {
-  const hasUploadedImage = value?.startsWith("http");
-
-  return (
-    <div className="upload-field">
-      <label className={uploading ? "upload-dropzone is-uploading" : "upload-dropzone"}>
-        <input
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          disabled={uploading}
-          onChange={(event) => {
-            onUpload(event.target.files?.[0] || null);
-            event.target.value = "";
-          }}
-        />
-        <span className="upload-icon" aria-hidden="true">+</span>
-        <span className="upload-copy">
-          <strong>{label}</strong>
-          <small>{uploading ? "Bitte kurz warten" : "JPG, PNG, WebP oder GIF bis 8 MB"}</small>
-        </span>
-        <span className="upload-action">{hasUploadedImage ? "Austauschen" : "Auswahlen"}</span>
-      </label>
-      {value && <small className="upload-status">{hasUploadedImage ? "Hochgeladenes Bild bereit" : "Standardbild aktiv"}</small>}
-    </div>
-  );
-}
-
-function Admin({ products, offers, onRefresh }) {
+function Admin({ onRefresh }) {
   const [token, setToken] = useState(localStorage.getItem("efsez-admin-token") || "");
   const [accessCode, setAccessCode] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(
     sessionStorage.getItem("efsez-staff-access") === "true" && Boolean(localStorage.getItem("efsez-admin-token"))
   );
-  const [productForm, setProductForm] = useState(emptyProduct);
-  const [offerForm, setOfferForm] = useState(emptyOffer);
-  const [activeForm, setActiveForm] = useState("product");
-  const [editingId, setEditingId] = useState(null);
-  const [editingOfferId, setEditingOfferId] = useState(null);
+  const [tab, setTab] = useState(sessionStorage.getItem("efsez-admin-tab") || "offers");
   const [message, setMessage] = useState("");
-  const [uploadingField, setUploadingField] = useState("");
-  const [productPreview, setProductPreview] = useState("");
-  const [offerPreview, setOfferPreview] = useState("");
-  const localPreviewUrls = useRef({ product: "", offer: "" });
+  const [categories, setCategories] = useState([]);
 
-  const categories = useMemo(
-    () => [...new Set(products.map((product) => product.category))].sort(),
-    [products]
-  );
+  const messageTimer = useRef(null);
+  const showMessage = useCallback((text) => {
+    setMessage(text);
+    window.clearTimeout(messageTimer.current);
+    messageTimer.current = window.setTimeout(() => setMessage(""), 6000);
+  }, []);
 
-  function saveToken(value) {
-    setToken(value);
-    localStorage.setItem("efsez-admin-token", value);
-  }
+  const loadCategories = useCallback(async () => {
+    if (!token) return;
+    try {
+      setCategories(await api.getCategories({ all: 1 }, token));
+    } catch (error) {
+      showMessage(error.message);
+    }
+  }, [token, showMessage]);
+
+  useEffect(() => {
+    // Kategorien einmal nach dem Login laden (Datenabruf, kein synchroner State).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (isUnlocked) loadCategories();
+  }, [isUnlocked, loadCategories]);
+
+  useEffect(() => {
+    sessionStorage.setItem("efsez-admin-tab", tab);
+  }, [tab]);
 
   async function submitAccess(event) {
     event.preventDefault();
     setMessage("");
-
     try {
       await api.verifyStaffAccess(accessCode);
-      saveToken(accessCode);
+      localStorage.setItem("efsez-admin-token", accessCode);
       sessionStorage.setItem("efsez-staff-access", "true");
+      setToken(accessCode);
       setIsUnlocked(true);
       setAccessCode("");
     } catch (error) {
@@ -126,166 +78,8 @@ function Admin({ products, offers, onRefresh }) {
     setMessage("");
   }
 
-  function updateProductField(field, value) {
-    setProductForm((current) => ({ ...current, [field]: value }));
-  }
-
-  function updateOfferField(field, value) {
-    setOfferForm((current) => ({ ...current, [field]: value }));
-  }
-
-  function setPreview(target, src) {
-    const previous = localPreviewUrls.current[target];
-    if (previous) URL.revokeObjectURL(previous);
-
-    localPreviewUrls.current[target] = src.startsWith("blob:") ? src : "";
-
-    if (target === "product") {
-      setProductPreview(src);
-    } else {
-      setOfferPreview(src);
-    }
-  }
-
-  async function uploadImage(file, target) {
-    if (!file) return;
-
-    const localPreview = URL.createObjectURL(file);
-    setPreview(target, localPreview);
-
-    if (!token) {
-      setMessage("Vorschau geladen. Bitte Zugangscode eintragen, damit das Bild dauerhaft hochgeladen werden kann.");
-      return;
-    }
-
-    setMessage("");
-    setUploadingField(target);
-
-    try {
-      const folder = target === "product" ? "produkte" : "angebote";
-      const pathname = `efsez/${folder}/${sanitizeFileName(file.name)}`;
-      const blob = await upload(pathname, file, {
-        access: "public",
-        handleUploadUrl: "/api/uploads",
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (target === "product") {
-        updateProductField("image", blob.url);
-        setPreview("product", blob.url);
-      } else {
-        updateOfferField("image", blob.url);
-        setPreview("offer", blob.url);
-      }
-
-      setMessage("Bild hochgeladen. Jetzt noch speichern, damit es am Produkt oder Angebot haengen bleibt.");
-    } catch (error) {
-      setMessage(`${error.message || "Bild konnte nicht hochgeladen werden."} Die lokale Vorschau bleibt sichtbar, aber gespeichert wird erst nach erfolgreichem Upload.`);
-    } finally {
-      setUploadingField("");
-    }
-  }
-
-  async function submitProduct(event) {
-    event.preventDefault();
-    setMessage("");
-    try {
-      if (editingId) {
-        await api.updateProduct(editingId, productForm, token);
-      } else {
-        await api.createProduct(productForm, token);
-      }
-      setProductForm(emptyProduct);
-      setPreview("product", "");
-      setEditingId(null);
-      await onRefresh();
-      setMessage("Produkt gespeichert.");
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-
-  async function submitOffer(event) {
-    event.preventDefault();
-    setMessage("");
-    try {
-      if (editingOfferId) {
-        await api.updateOffer(editingOfferId, offerForm, token);
-      } else {
-        await api.createOffer(offerForm, token);
-      }
-      setOfferForm(emptyOffer);
-      setPreview("offer", "");
-      setEditingOfferId(null);
-      await onRefresh();
-      setMessage(editingOfferId ? "Angebot aktualisiert." : "Angebot veroffentlicht.");
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-
-  async function removeProduct(id) {
-    setMessage("");
-    try {
-      await api.deleteProduct(id, token);
-      await onRefresh();
-      setMessage("Produkt geloscht.");
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-
-  async function removeOffer(id) {
-    setMessage("");
-    try {
-      await api.deleteOffer(id, token);
-      await onRefresh();
-      setMessage("Angebot geloscht.");
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-
-  function editProduct(product) {
-    setActiveForm("product");
-    setEditingId(product.id);
-    setProductForm({
-      name: product.name || "",
-      category: product.category || "",
-      brand: product.brand || "",
-      description: product.description || "",
-      details: product.details || "",
-      unit: product.unit || "",
-      origin: product.origin || "",
-      allergens: product.allergens || "",
-      barcode: product.barcode || "",
-      tags: product.tags || "",
-      image: product.image || "",
-      featured: product.featured,
-      available: product.available
-    });
-    setPreview("product", product.image || "");
-  }
-
-  function editOffer(offer) {
-    setActiveForm("offer");
-    setEditingOfferId(offer.id);
-    setOfferForm({
-      title: offer.title || "",
-      description: offer.description || "",
-      price: offer.price || "",
-      image: offer.image || "",
-      starts_at: offer.starts_at || "",
-      ends_at: offer.ends_at || "",
-      active: offer.active
-    });
-    setPreview("offer", offer.image || "");
-  }
-
-  function resetOfferForm() {
-    setEditingOfferId(null);
-    setOfferForm(emptyOffer);
-    setPreview("offer", "");
+  async function changed() {
+    await Promise.all([loadCategories(), onRefresh?.()]);
   }
 
   if (!isUnlocked) {
@@ -294,7 +88,7 @@ function Admin({ products, offers, onRefresh }) {
         <form className="access-panel" onSubmit={submitAccess}>
           <p className="admin-kicker">Personalzugang</p>
           <h2>Zugangscode erforderlich</h2>
-          <p>Dieser Bereich ist nur für Mitarbeitende. Nach der Anmeldung können Produkte, Bilder und Angebote gepflegt werden.</p>
+          <p>Dieser Bereich ist nur für Mitarbeitende. Nach der Anmeldung können Angebote, Produkte, Kategorien und Anfragen gepflegt werden.</p>
 
           <label>
             Zugangscode
@@ -316,139 +110,42 @@ function Admin({ products, offers, onRefresh }) {
     );
   }
 
+  const shared = { token, categories, onMessage: showMessage, onChanged: changed };
+
   return (
     <section id="admin" className="admin-section">
       <div className="admin-header">
         <div>
           <p className="admin-kicker">Personalbereich</p>
-          <h2>Produkte und Angebote pflegen</h2>
-          <p>Geschuetzter Bereich fuer Mitarbeitende: Produkte, Bilder und Wochenangebote fuer die Website bearbeiten.</p>
+          <h2>Website pflegen</h2>
         </div>
         <button type="button" className="lock-button" onClick={lockAccess}>Abmelden</button>
       </div>
 
-      {message && <div className="admin-message">{message}</div>}
+      <nav className="admin-tabs" role="tablist" aria-label="Bereiche">
+        {TABS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={tab === item.id}
+            className={tab === item.id ? "active" : ""}
+            onClick={() => setTab(item.id)}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
 
-      <div className="admin-form-switch" role="tablist" aria-label="Personal Formular">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeForm === "product"}
-          className={activeForm === "product" ? "active" : ""}
-          onClick={() => setActiveForm("product")}
-        >
-          Produkt
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeForm === "offer"}
-          className={activeForm === "offer" ? "active" : ""}
-          onClick={() => setActiveForm("offer")}
-        >
-          Angebot
-        </button>
-      </div>
+      {message && <div className="admin-message" role="status">{message}</div>}
 
-      <div className="admin-form-area">
-        {activeForm === "product" && (
-        <form className="admin-panel" onSubmit={submitProduct}>
-          <h3>{editingId ? "Produkt bearbeiten" : "Produkt anlegen"}</h3>
-
-          <div className="admin-field-grid">
-            <input required placeholder="Produktname" value={productForm.name} onChange={(event) => updateProductField("name", event.target.value)} />
-            <input required placeholder="Marke" value={productForm.brand} onChange={(event) => updateProductField("brand", event.target.value)} />
-          </div>
-
-          <div className="admin-field-grid">
-            <input required list="categories" placeholder="Kategorie" value={productForm.category} onChange={(event) => updateProductField("category", event.target.value)} />
-            <input placeholder="Einheit, z. B. 500 g" value={productForm.unit} onChange={(event) => updateProductField("unit", event.target.value)} />
-          </div>
-
-          <datalist id="categories">
-            {categories.map((category) => <option value={category} key={category} />)}
-          </datalist>
-
-          <ImageUploadField
-            label={uploadingField === "product" ? "Produktbild wird hochgeladen..." : "Produktbild auswahlen"}
-            value={productForm.image}
-            uploading={uploadingField === "product"}
-            onUpload={(file) => uploadImage(file, "product")}
-          />
-          <ImagePreview src={productPreview || productForm.image} label="Produktbild Vorschau" />
-          <textarea required placeholder="Kurze Beschreibung für Produktkarten" value={productForm.description} onChange={(event) => updateProductField("description", event.target.value)} />
-          <textarea placeholder="Produktinformationen für Detailseite" value={productForm.details} onChange={(event) => updateProductField("details", event.target.value)} />
-
-          <div className="admin-field-grid">
-            <input placeholder="Herkunft" value={productForm.origin} onChange={(event) => updateProductField("origin", event.target.value)} />
-            <input placeholder="Allergene" value={productForm.allergens} onChange={(event) => updateProductField("allergens", event.target.value)} />
-          </div>
-
-          <div className="admin-field-grid">
-            <input placeholder="Barcode / SKU" value={productForm.barcode} onChange={(event) => updateProductField("barcode", event.target.value)} />
-            <input placeholder="Tags, kommagetrennt" value={productForm.tags} onChange={(event) => updateProductField("tags", event.target.value)} />
-          </div>
-
-          <div className="check-row">
-            <label><input type="checkbox" checked={productForm.featured} onChange={(event) => updateProductField("featured", event.target.checked)} /> Beliebt</label>
-            <label><input type="checkbox" checked={productForm.available} onChange={(event) => updateProductField("available", event.target.checked)} /> Verfugbar</label>
-          </div>
-
-          <button type="submit">{editingId ? "Produkt aktualisieren" : "Produkt speichern"}</button>
-          {editingId && <button type="button" className="ghost-button" onClick={() => { setEditingId(null); setProductForm(emptyProduct); setPreview("product", ""); }}>Abbrechen</button>}
-        </form>
-        )}
-
-        {activeForm === "offer" && (
-        <form className="admin-panel" onSubmit={submitOffer}>
-          <h3>{editingOfferId ? "Angebot bearbeiten" : "Angebot hochladen"}</h3>
-          <input required placeholder="Titel" value={offerForm.title} onChange={(event) => updateOfferField("title", event.target.value)} />
-          <input placeholder="Preis, z. B. 1,99 EUR" value={offerForm.price} onChange={(event) => updateOfferField("price", event.target.value)} />
-          <ImageUploadField
-            label={uploadingField === "offer" ? "Angebotsbild wird hochgeladen..." : "Angebotsbild auswahlen"}
-            value={offerForm.image}
-            uploading={uploadingField === "offer"}
-            onUpload={(file) => uploadImage(file, "offer")}
-          />
-          <ImagePreview src={offerPreview || offerForm.image} label="Angebotsbild Vorschau" />
-          <div className="date-row">
-            <input type="date" value={offerForm.starts_at} onChange={(event) => updateOfferField("starts_at", event.target.value)} />
-            <input type="date" value={offerForm.ends_at} onChange={(event) => updateOfferField("ends_at", event.target.value)} />
-          </div>
-          <textarea required placeholder="Beschreibung" value={offerForm.description} onChange={(event) => updateOfferField("description", event.target.value)} />
-          <label className="single-check"><input type="checkbox" checked={offerForm.active} onChange={(event) => updateOfferField("active", event.target.checked)} /> Aktiv anzeigen</label>
-          <button type="submit">{editingOfferId ? "Angebot aktualisieren" : "Angebot veroffentlichen"}</button>
-          {editingOfferId && <button type="button" className="ghost-button" onClick={resetOfferForm}>Abbrechen</button>}
-        </form>
-        )}
-      </div>
-
-      <div className="admin-lists">
-        <div className="admin-list">
-          <h3>Produkte</h3>
-          {products.map((product) => (
-            <div className="admin-list-row" key={product.id}>
-              <span>{product.name}</span>
-              <div>
-                <button type="button" onClick={() => editProduct(product)}>Bearbeiten</button>
-                <button type="button" onClick={() => removeProduct(product.id)}>Loschen</button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="admin-list">
-          <h3>Angebote</h3>
-          {offers.map((offer) => (
-            <div className="admin-list-row" key={offer.id}>
-              <span>{offer.title}</span>
-              <div>
-                <button type="button" onClick={() => editOffer(offer)}>Bearbeiten</button>
-                <button type="button" onClick={() => removeOffer(offer.id)}>Loschen</button>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="admin-content">
+        {tab === "offers" && <AdminOffers {...shared} />}
+        {tab === "products" && <AdminProducts {...shared} />}
+        {tab === "categories" && <AdminCategories {...shared} />}
+        {tab === "requests" && <AdminRequests {...shared} />}
+        {tab === "import" && <AdminImport {...shared} />}
+        {tab === "settings" && <AdminSettings {...shared} />}
       </div>
     </section>
   );

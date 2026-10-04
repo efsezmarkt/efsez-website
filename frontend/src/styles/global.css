@@ -742,3 +742,28 @@ input {
     transform: translateX(-50%);
   }
 }
+
+/* ---------- Hero: Angebots-Teaser statt Logo-Karte ---------- */
+
+.hero-visual .hero-deals {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 460px);
+}
+
+.hero-visual .hero-deals .deal {
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 900px) {
+  .hero-visual .hero-deals {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* Kein seitliches Wackeln auf dem Handy (ausgeklapptes Menü liegt sonst rechts außerhalb). */
+html {
+  overflow-x: hidden;
+}

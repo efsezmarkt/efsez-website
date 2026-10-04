@@ -1,4 +1,8 @@
-function Footer() {
+import { branch } from "../data/branches";
+
+function Footer({ settings }) {
+  const address = settings?.address || branch.address;
+
   return (
     <footer className="footer">
       <div className="footer-content">
@@ -16,13 +20,14 @@ function Footer() {
 
         <div>
           <h4>Kontakt</h4>
-          <p>Burgsalacher Str. 1, 90449 Nürnberg</p>
-          <p>Äußere Bayreuther Str. 131A, 90411 Nürnberg</p>
+          <p>{address}</p>
+          {settings?.phone && <p>Tel.: {settings.phone}</p>}
+          {settings?.contact_email && <p>{settings.contact_email}</p>}
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 EFSE&apos;Z Markt. Alle Rechte vorbehalten.</p>
+        <p>© {new Date().getFullYear()} EFSE&apos;Z Markt. Alle Rechte vorbehalten.</p>
         <a href="#/admin" className="footer-staff-access">Personalzugang</a>
       </div>
     </footer>

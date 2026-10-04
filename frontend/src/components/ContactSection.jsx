@@ -1,11 +1,18 @@
-import { branches } from "../data/branches";
+import { branch } from "../data/branches";
+import { whatsappLink } from "../lib/site";
 
-function ContactSection() {
+function ContactSection({ settings }) {
+  const address = settings?.address || branch.address;
+  const phone = settings?.phone || branch.phone;
+  const [street, ...cityParts] = address.split(",").map((part) => part.trim());
+  const city = cityParts.join(", ");
+  const hours = String(settings?.opening_hours || "").split("\n").filter(Boolean);
+
   return (
     <section id="contact" className="contact-section">
       <div className="contact-layout">
         <div className="contact-intro">
-          <p className="section-label">Filialen</p>
+          <p className="section-label">Markt</p>
           <h2>Fragen zu Produkten oder Verfügbarkeit?</h2>
           <p>
             Kontaktieren Sie uns direkt oder besuchen Sie EFSE&apos;Z Markt vor
@@ -13,48 +20,42 @@ function ContactSection() {
             WhatsApp der schnellste Weg.
           </p>
 
-          <a className="whatsapp-button" href="https://wa.me/490000000000">
+          <a className="whatsapp-button" href={whatsappLink(settings)}>
             WhatsApp schreiben
           </a>
         </div>
 
         <div className="branches-area">
-          <h2 className="branches-title">Unsere Filialen</h2>
+          <h2 className="branches-title">So finden Sie uns</h2>
 
           <div className="branch-cards">
-            {branches.map((branch) => (
-              <div className="branch-card" key={branch.id}>
-                <span className="branch-pin" aria-hidden="true" />
-                <h3>{branch.name}</h3>
-                <p>{branch.street}</p>
-                <p>{branch.city}</p>
-                <p>Tel.: {branch.phone}</p>
-              </div>
-            ))}
+            <div className="branch-card">
+              <span className="branch-pin" aria-hidden="true" />
+              <h3>{branch.name}</h3>
+              <p>{street}</p>
+              {city && <p>{city}</p>}
+              {phone && <p>Tel.: <a href={`tel:${phone.replace(/[^\d+]/g, "")}`}>{phone}</a></p>}
+              {settings?.contact_email && <p><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></p>}
+            </div>
           </div>
 
           <div className="opening-card">
             <strong>Öffnungszeiten</strong>
-            <span>Montag - Samstag: 08:00 - 20:00 Uhr</span>
-            <span>Sonntag: Geschlossen</span>
+            {hours.map((line) => <span key={line}>{line}</span>)}
           </div>
         </div>
       </div>
 
-      <div className="maps-grid">
-        {branches.map((branch) => (
-          <div className="map-box" key={branch.id}>
-            <h3>{branch.name}</h3>
-            <iframe
-              title={branch.name}
-              src={`https://www.google.com/maps?q=${encodeURIComponent(
-                branch.mapQuery
-              )}&output=embed`}
-              loading="lazy"
-              allowFullScreen
-            ></iframe>
-          </div>
-        ))}
+      <div className="maps-grid maps-single">
+        <div className="map-box">
+          <h3>{branch.name}</h3>
+          <iframe
+            title={branch.name}
+            src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+            loading="lazy"
+            allowFullScreen
+          ></iframe>
+        </div>
       </div>
     </section>
   );

@@ -160,3 +160,20 @@
     font-size: 0.7rem;
   }
 }
+
+/* ---------- Ergänzungen: Kategorien als Links, Platzhalter ---------- */
+
+a.category-card {
+  display: block;
+  text-decoration: none;
+}
+
+.category-initial {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  opacity: 0.75;
+}

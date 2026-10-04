@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import logo from "../assets/images/logo.png";
+import { whatsappLink } from "../lib/site";
 
-function Header({ currentPage }) {
+function Header({ currentPage, settings }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const isActive = (page) => currentPage === page || (page === "products" && currentPage === "product");
 
@@ -64,13 +65,13 @@ function Header({ currentPage }) {
             <li><a className={isActive("home") ? "active" : ""} href="#/" onClick={closeMenu}>Home</a></li>
             <li><a href="#/" onClick={() => scrollHomeSection("offers")}>Angebote</a></li>
             <li><a className={isActive("products") ? "active" : ""} href="#/products" onClick={closeMenu}>Produkte</a></li>
-            <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Filialen</a></li>
+            <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Markt</a></li>
             <li><a className={isActive("contact") ? "active" : ""} href="#/contact" onClick={closeMenu}>Kontakt</a></li>
           </ul>
         </nav>
 
         <div className="header-actions">
-          <a href="https://wa.me/490000000000" className="header-whatsapp" onClick={closeMenu}>
+          <a href={whatsappLink(settings)} className="header-whatsapp" onClick={closeMenu}>
             WhatsApp
           </a>
           <a

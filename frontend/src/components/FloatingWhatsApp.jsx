@@ -1,10 +1,15 @@
-function FloatingWhatsApp() {
+import { whatsappLink } from "../lib/site";
+
+function FloatingWhatsApp({ settings }) {
+  const href = whatsappLink(settings);
+  const external = href.startsWith("http");
+
   return (
     <a
-      href="https://wa.me/490000000000"
+      href={href}
       className="floating-whatsapp"
-      target="_blank"
-      rel="noreferrer"
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
       aria-label="WhatsApp schreiben"
     >
       WhatsApp

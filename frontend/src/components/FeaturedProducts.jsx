@@ -1,7 +1,8 @@
 import ProductCard from "./ProductCard";
 
-function FeaturedProducts({ products }) {
-  const featuredProducts = products.filter((product) => product.featured);
+function FeaturedProducts({ products, categories = [], settings }) {
+  if (!products.length) return null;
+  const categoryImages = Object.fromEntries(categories.map((category) => [category.name, category.image]));
 
   return (
     <section className="featured-section">
@@ -12,9 +13,18 @@ function FeaturedProducts({ products }) {
       </div>
 
       <div className="products-grid">
-        {featuredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {products.slice(0, 6).map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            categoryImage={categoryImages[product.category] || ""}
+            settings={settings}
+          />
         ))}
+      </div>
+
+      <div className="load-more">
+        <a className="product-button" href="#/products">Ganzes Sortiment ansehen</a>
       </div>
     </section>
   );

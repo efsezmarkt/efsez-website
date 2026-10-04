@@ -1,11 +1,19 @@
-const stats = [
-  { value: "2", label: "Filialen", note: "in Nürnberg" },
-  { value: "850+", label: "Produkte", note: "im Sortiment" },
-  { value: "6", label: "Tage pro Woche", note: "für Sie da" },
-  { value: "100%", label: "Frische", note: "in der Auswahl" },
-];
+function roundDown(total) {
+  if (!total || total < 50) return null;
+  const step = total >= 1000 ? 100 : 50;
+  return `${Math.floor(total / step) * step}+`;
+}
 
-function StatsSection() {
+function StatsSection({ productTotal, settings }) {
+  const productLabel = settings?.product_count_label || roundDown(productTotal);
+
+  const stats = [
+    productLabel ? { value: productLabel, label: "Produkte", note: "im Katalog" } : null,
+    { value: "6", label: "Tage pro Woche", note: "für Sie da" },
+    { value: "100%", label: "Frische", note: "in der Auswahl" },
+    { value: "Direkt", label: "per WhatsApp", note: "anfragen" }
+  ].filter(Boolean);
+
   return (
     <section className="stats-section" aria-label="EFSE'Z Markt in Zahlen">
       {stats.map((stat) => (
