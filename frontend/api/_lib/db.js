@@ -1,4 +1,4 @@
-import { seedCategories, seedOffer, seedProducts } from "./seed.js";
+import { seedCategories, seedProducts } from "./seed.js";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL ist nicht gesetzt.");
@@ -156,6 +156,11 @@ async function renameLegacyCategories() {
     await sql`UPDATE products SET category = ${to} WHERE category = ${from}`;
     await sql`DELETE FROM categories WHERE name = ${from}`;
   }
+  // Platzhalter-Angebot der ersten Version (ohne Produkte, mit Hero-Bild) entfernen.
+  await sql`
+    DELETE FROM offers o
+    WHERE o.image = '/assets/hero.png'
+      AND NOT EXISTS (SELECT 1 FROM offer_items oi WHERE oi.offer_id = o.id)`;
 }
 
 async function seedIfEmpty() {
@@ -175,18 +180,6 @@ async function seedIfEmpty() {
         )
       `;
     }
-  }
-
-  const [{ count: offerCount }] = await sql`SELECT COUNT(*)::int AS count FROM offers`;
-  if (offerCount === 0) {
-    await sql`
-      INSERT INTO offers (title, description, price, image, starts_at, ends_at, active)
-      VALUES (
-        ${seedOffer.title}, ${seedOffer.description}, ${seedOffer.price},
-        ${seedOffer.image}, ${seedOffer.starts_at}, ${seedOffer.ends_at},
-        ${seedOffer.active}
-      )
-    `;
   }
 
   // Kategorien: Startliste + alles, was in Produkten schon als Kategorie steht.

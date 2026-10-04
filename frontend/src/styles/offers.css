@@ -225,55 +225,6 @@
   font-size: 1.45rem;
 }
 
-/* ---------- Hero-Teaser ---------- */
-
-.hero-deals {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.hero-deals-title {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.hero-deals-title a {
-  color: #ffe6c7;
-  font-size: 0.8rem;
-  text-decoration: none;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.deal-compact .deal-media {
-  padding: 12px 12px 24px;
-}
-
-.deal-compact .deal-body {
-  padding: 10px 12px 12px;
-}
-
-.deal-compact .deal-body h3 {
-  font-size: 0.9rem;
-}
-
-.deal-compact .deal-flag strong {
-  font-size: 1.2rem;
-}
-
-.deal-compact .deal-flag {
-  padding: 5px 9px 6px;
-}
-
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1000px) {
@@ -344,10 +295,6 @@
 
   .deal-body small {
     font-size: 0.72rem;
-  }
-
-  .hero-deals {
-    gap: 8px;
   }
 }
 

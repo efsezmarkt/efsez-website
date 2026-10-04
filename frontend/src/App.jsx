@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
+import Offers from "./pages/Offers";
 import ProductDetail from "./pages/ProductDetail";
 import Admin from "./pages/Admin";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
@@ -79,6 +80,8 @@ function App() {
           <Products categories={categories} settings={settings} initialCategory={route.params.get("kategorie") || "Alle"} />
         ) : route.page === "product" ? (
           <ProductDetail id={route.id} settings={settings} />
+        ) : route.page === "offers" ? (
+          <Offers offers={offers} categories={categories} />
         ) : route.page === "admin" ? (
           <Admin onRefresh={loadSite} />
         ) : route.page === "contact" ? (

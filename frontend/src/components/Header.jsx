@@ -63,7 +63,7 @@ function Header({ currentPage, settings }) {
         <nav className="main-nav">
           <ul className="nav-links">
             <li><a className={isActive("home") ? "active" : ""} href="#/" onClick={closeMenu}>Home</a></li>
-            <li><a href="#/" onClick={() => scrollHomeSection("offers")}>Angebote</a></li>
+            <li><a className={isActive("offers") ? "active" : ""} href="#/offers" onClick={closeMenu}>Angebote</a></li>
             <li><a className={isActive("products") ? "active" : ""} href="#/products" onClick={closeMenu}>Produkte</a></li>
             <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Markt</a></li>
             <li><a className={isActive("contact") ? "active" : ""} href="#/contact" onClick={closeMenu}>Kontakt</a></li>

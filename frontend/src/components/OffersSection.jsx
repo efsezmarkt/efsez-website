@@ -26,7 +26,7 @@ function OffersSection({ offers, categories = [] }) {
       <div className="section-header">
         <p className="section-kicker">Diese Woche</p>
         <h2>Aktuelle Angebote</h2>
-        <p>Nur im Markt. Solange der Vorrat reicht.</p>
+        <p>Nur im Markt. Solange der Vorrat reicht. Preise können sich ändern.</p>
       </div>
 
       {offers.map((offer) => (

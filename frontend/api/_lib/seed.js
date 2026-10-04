@@ -136,16 +136,6 @@ export const seedProducts = [
   }
 ];
 
-export const seedOffer = {
-  title: "Wochenangebot",
-  description: "Aktuelle Angebote direkt aus dem Markt. Details im Laden oder per WhatsApp anfragen.",
-  price: "ab 1,99 EUR",
-  image: "/assets/hero.png",
-  starts_at: "",
-  ends_at: "",
-  active: true
-};
-
 export const seedCategories = [
   { name: "Obst & Gemüse", description: "Frisch vom Markt", image: "", sort_order: 10 },
   { name: "Frische Theke", description: "Fleisch, Geflügel, Fisch", image: "", sort_order: 20 },

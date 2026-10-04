@@ -24,6 +24,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Kein seitliches Wackeln auf dem Handy (ausgeklapptes Menü liegt sonst rechts außerhalb). */
+  overflow-x: hidden;
 }
 
 body {
@@ -743,27 +745,245 @@ input {
   }
 }
 
-/* ---------- Hero: Angebots-Teaser statt Logo-Karte ---------- */
+/* ---------- Hero: Angebotsfenster statt Logo-Karte ---------- */
 
-.hero-visual .hero-deals {
+.offer-slider {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(100%, 460px);
+  padding: 16px 16px 22px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fffaf1, #f1eadf);
+  box-shadow:
+    0 38px 84px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.hero-visual .hero-deals .deal {
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.28);
+.offer-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 4px 12px;
+}
+
+.offer-slider-label {
+  color: var(--accent-red);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.offer-slider-period {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.offer-slide {
+  display: block;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(35, 42, 34, 0.1);
+}
+
+.offer-slide-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #f7f1e4 70%, #efe6d3 100%);
+}
+
+.offer-slide-media img,
+.offer-slide-media .product-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 16px rgba(24, 38, 28, 0.16));
+}
+
+.offer-slide-media .product-placeholder {
+  filter: none;
+}
+
+.offer-slide-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--accent-red);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 18px rgba(139, 29, 52, 0.3);
+}
+
+.offer-slide-body {
+  padding: 14px 16px 16px;
+  display: grid;
+  gap: 4px;
+}
+
+.offer-slide-name {
+  color: var(--primary-green);
+  font-size: 1.1rem;
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.offer-slide-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.offer-slide-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.offer-slide-price {
+  color: var(--accent-red);
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.offer-slide-price-text {
+  font-size: 1.2rem;
+}
+
+.offer-slide-old {
+  color: var(--muted);
+  font-weight: 800;
+  text-decoration-color: var(--accent-red);
+  text-decoration-thickness: 2px;
+}
+
+.offer-slide-link {
+  margin-left: auto;
+  color: var(--primary-green);
+  font-size: 0.86rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.offer-slider-arrow {
+  position: absolute;
+  top: 46%;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--primary-green);
+  font-size: 1.7rem;
+  line-height: 1;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.offer-slider-arrow:hover {
+  background: var(--accent-orange);
+  color: #ffffff;
+  transform: scale(1.06);
+}
+
+.offer-slider-arrow.prev {
+  left: -14px;
+}
+
+.offer-slider-arrow.next {
+  right: -14px;
+}
+
+.offer-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.offer-slider-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(13, 92, 58, 0.22);
+  cursor: pointer;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.offer-slider-dots button.active {
+  width: 22px;
+  background: var(--accent-orange);
 }
 
 @media (max-width: 900px) {
-  .hero-visual .hero-deals {
+  .offer-slider {
     width: 100%;
     max-width: 420px;
     margin: 0 auto;
+    padding: 12px 12px 16px;
+    border-radius: 18px;
+  }
+
+  .offer-slide-media {
+    aspect-ratio: 16 / 11;
+    padding: 12px;
+  }
+
+  .offer-slide-name {
+    font-size: 1rem;
+  }
+
+  .offer-slide-price {
+    font-size: 1.6rem;
+  }
+
+  .offer-slider-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 1.4rem;
+  }
+
+  .offer-slider-arrow.prev {
+    left: -6px;
+  }
+
+  .offer-slider-arrow.next {
+    right: -6px;
   }
 }
 
-/* Kein seitliches Wackeln auf dem Handy (ausgeklapptes Menü liegt sonst rechts außerhalb). */
-html {
-  overflow-x: hidden;
+/* Mobil: Angebotsfenster ganz oben, vor dem Hero-Text. */
+@media (max-width: 900px) {
+  .hero-visual:has(.offer-slider) {
+    order: -1;
+    margin-bottom: 26px;
+  }
 }

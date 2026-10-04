@@ -1,8 +1,7 @@
 import CategoryGrid from "../components/CategoryGrid";
 import FeaturedProducts from "../components/FeaturedProducts";
 import ProductCarousel from "../components/ProductCarousel";
-import OffersSection from "../components/OffersSection";
-import DealCard from "../components/DealCard";
+import OfferSlider from "../components/OfferSlider";
 import InfoSection from "../components/InfoSection";
 import ContactSection from "../components/ContactSection";
 import ContactFormSection from "../components/ContactFormSection";
@@ -14,17 +13,13 @@ import "../styles/stats.css";
 import "../styles/categories.css";
 import "../styles/products.css";
 import "../styles/info.css";
+import { formatDate } from "../lib/site";
 
 function Home({ featured, offers, categories, settings, productTotal }) {
-  const scrollToOffers = () => {
-    window.setTimeout(() => {
-      document.getElementById("offers")?.scrollIntoView({ behavior: "smooth" });
-    }, 0);
-  };
-
-  // Die ersten zwei Angebotspositionen wandern als Blickfang in den Hero.
-  const allDeals = offers.flatMap((offer) => offer.items);
-  const heroDeals = [...allDeals.filter((item) => item.offer_price !== null), ...allDeals.filter((item) => item.offer_price === null)].slice(0, 2);
+  // Alle aktiven Angebotspositionen laufen im Hero-Fenster durch.
+  const deals = offers.flatMap((offer) => offer.items);
+  const firstOffer = offers.find((offer) => offer.items.length > 0);
+  const offerLabel = firstOffer?.ends_at ? `bis ${formatDate(firstOffer.ends_at)}` : "";
   const categoryImages = Object.fromEntries(categories.map((category) => [category.name, category.image]));
 
   return (
@@ -67,23 +62,15 @@ function Home({ featured, offers, categories, settings, productTotal }) {
 
             <div className="hero-buttons">
               <a href="#/products" className="btn-primary">Sortiment ansehen</a>
-              {offers.length > 0 && (
-                <a href="#/" onClick={scrollToOffers} className="btn-secondary">Wochenangebote</a>
+              {deals.length > 0 && (
+                <a href="#/offers" className="btn-secondary">Alle Angebote</a>
               )}
             </div>
           </div>
 
           <div className="hero-visual">
-            {heroDeals.length > 0 ? (
-              <div className="hero-deals">
-                <div className="hero-deals-title">
-                  <span>Angebot der Woche</span>
-                  <a href="#/" onClick={scrollToOffers}>Alle Angebote</a>
-                </div>
-                {heroDeals.map((item) => (
-                  <DealCard key={item.id} item={item} categoryImage={categoryImages[item.category] || ""} compact />
-                ))}
-              </div>
+            {deals.length > 0 ? (
+              <OfferSlider items={deals} categoryImages={categoryImages} offerLabel={offerLabel} />
             ) : (
               <>
                 <div className="hero-logo-card">
@@ -102,7 +89,6 @@ function Home({ featured, offers, categories, settings, productTotal }) {
         <div className="hero-wave"></div>
       </section>
 
-      <OffersSection offers={offers} categories={categories} />
       <StatsSection productTotal={productTotal} settings={settings} />
       <CategoryGrid categories={categories} />
       <FeaturedProducts products={featured} categories={categories} settings={settings} />
