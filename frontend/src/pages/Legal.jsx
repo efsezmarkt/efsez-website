@@ -14,16 +14,20 @@ function Legal({ kind, settings }) {
       <div className="wrap legal-page">
         {text ? (
           <div className="legal-text">
-            {text.split(/\n{2,}/).map((block, index) => (
-              <p key={index}>
-                {block.split("\n").map((line, i, lines) => (
-                  <span key={i}>
-                    {line}
-                    {i < lines.length - 1 && <br />}
-                  </span>
-                ))}
-              </p>
-            ))}
+            {text.split(/\n{2,}/).map((block, index) =>
+              /^\d{1,2}\.\s+\S[^\n]{0,70}$/.test(block.trim()) ? (
+                <h2 key={index}>{block.trim()}</h2>
+              ) : (
+                <p key={index}>
+                  {block.split("\n").map((line, i, lines) => (
+                    <span key={i}>
+                      {line}
+                      {i < lines.length - 1 && <br />}
+                    </span>
+                  ))}
+                </p>
+              ),
+            )}
           </div>
         ) : (
           <div className="legal-text">
