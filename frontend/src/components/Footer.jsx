@@ -42,6 +42,14 @@ function Footer({ settings }) {
           <a href="#/personal">Personalzugang</a>
         </nav>
       </div>
+
+      <div className="wrap site-footer-powered">
+        <a href="https://automaticprocess.de" target="_blank" rel="noopener">
+          <span>Powered by</span>
+          <img src="/assets/images/automaticprocess.png" alt="" width="18" height="18" loading="lazy" />
+          <strong>AutomaticProcess</strong>
+        </a>
+      </div>
     </footer>
   );
 }

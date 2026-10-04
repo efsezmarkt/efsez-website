@@ -2275,6 +2275,43 @@
   gap: 20px;
 }
 
+.site-footer-powered {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.site-footer-powered a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.74rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-footer-powered img {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+.site-footer-powered strong {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.site-footer-powered a:hover,
+.site-footer-powered a:focus-visible {
+  color: #fff;
+}
+
+.site-footer-powered a:hover strong,
+.site-footer-powered a:focus-visible strong {
+  color: #fff;
+}
+
 /* ---------- WhatsApp-Knopf (Handy) ---------- */
 
 .wa-fab {
