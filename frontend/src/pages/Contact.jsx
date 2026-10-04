@@ -1,30 +1,35 @@
-import StoreInfo from "../components/StoreInfo";
+import PageHero from "../components/PageHero";
 import ContactForm from "../components/ContactForm";
-import { mapsLink } from "../lib/format";
+import MarketSection from "../components/MarketSection";
 
 function Contact({ settings }) {
   return (
-    <div className="wrap contact-page">
-      <header className="page-head">
-        <h1>Markt & Kontakt</h1>
-        <p>Kommen Sie vorbei oder schreiben Sie uns – wir antworten meist noch am selben Tag.</p>
-      </header>
+    <>
+      <PageHero
+        kicker="Markt & Kontakt"
+        title="So erreichen Sie uns"
+        text="Kommen Sie vorbei oder schreiben Sie uns – wir antworten meist noch am selben Tag."
+        wave={false}
+      />
 
-      <div className="visit-grid">
-        <div>
-          <StoreInfo settings={settings} />
-          <a className="map-card" href={mapsLink(settings.address)} target="_blank" rel="noreferrer">
-            <span className="map-card-pin" aria-hidden="true" />
-            <strong>{settings.address}</strong>
-            <span>In Google Maps öffnen</span>
-          </a>
+      <MarketSection settings={settings} />
+
+      <section className="section contact-section">
+        <div className="wrap contact-layout">
+          <div className="contact-intro">
+            <p className="kicker">Nachricht</p>
+            <h2>Produktwunsch, Partnerschaft oder kurze Frage?</h2>
+            <p>
+              Sie suchen ein bestimmtes Produkt, planen eine Feier oder möchten uns beliefern? Schreiben Sie uns –
+              wir besorgen gern, was im Regal fehlt.
+            </p>
+          </div>
+          <div className="contact-card">
+            <ContactForm />
+          </div>
         </div>
-        <div>
-          <h2>Nachricht senden</h2>
-          <ContactForm />
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }
 

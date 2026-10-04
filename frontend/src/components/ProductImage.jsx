@@ -3,13 +3,20 @@ import { imageUrl } from "../lib/config";
 
 /**
  * Produktbild. Ohne Foto erscheint ein Regaletikett mit dem Produktnamen
- * (variant="label", optional mit Kategorie als caption) bzw. in kleinen Vorschaubildern nur der Anfangsbuchstabe (variant="letter").
+ * (variant="label", optional mit Kategorie als caption), in Karten ein Monogramm (variant="monogram") bzw. in kleinen Vorschaubildern nur der Anfangsbuchstabe (variant="letter").
  */
 function ProductImage({ src, name, caption = "", eager = false, variant = "label", className = "" }) {
   const [failed, setFailed] = useState(false);
   const url = imageUrl(src);
 
   if (!url || failed) {
+    if (variant === "monogram") {
+      return (
+        <span className={`product-monogram ${className}`} role="img" aria-label={name}>
+          {(name || "?").trim().charAt(0).toUpperCase()}
+        </span>
+      );
+    }
     return variant === "letter" ? (
       <span className={`product-placeholder ${className}`} role="img" aria-label={name}>
         {(name || "?").trim().charAt(0).toUpperCase()}

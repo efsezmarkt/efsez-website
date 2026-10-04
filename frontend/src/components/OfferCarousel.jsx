@@ -74,7 +74,7 @@ function OfferCarousel({ deals, period }) {
               tabIndex={i === index ? 0 : -1}
             >
               <span className="offer-slide-media">
-                <ProductImage src={deal.image} name={deal.name} eager={i === 0} />
+                <ProductImage src={deal.image} name={deal.name} eager={i === 0} variant="monogram" />
               </span>
               <span className="offer-slide-info">
                 <span className="offer-slide-text">

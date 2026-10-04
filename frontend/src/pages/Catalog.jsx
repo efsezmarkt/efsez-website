@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import Icon from "../components/Icon";
+import PageHero from "../components/PageHero";
 import { loadProducts } from "../lib/db";
 
 /**
  * Sortiment: Suche und Kategorie laufen in der Datenbank, es werden immer nur
  * 24 Artikel geladen. Beim Runterscrollen kommen die nächsten automatisch.
  */
-function Catalog({ categories, categoryId }) {
-  const [search, setSearch] = useState("");
-  const [term, setTerm] = useState("");
+function Catalog({ categories, categoryId, initialSearch = "" }) {
+  const [search, setSearch] = useState(initialSearch);
+  const [term, setTerm] = useState(initialSearch.trim());
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(null);
   const [page, setPage] = useState(0);
@@ -23,7 +24,7 @@ function Catalog({ categories, categoryId }) {
   const activeCategory = categories.find((category) => category.id === categoryId) || null;
 
   useEffect(() => {
-    if (window.location.hash.includes("suche=1")) searchInput.current?.focus();
+    if (window.location.hash.includes("suche=")) searchInput.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -77,20 +78,27 @@ function Catalog({ categories, categoryId }) {
 
   return (
     <div className="catalog">
+      <PageHero
+        kicker="Sortiment"
+        title={activeCategory ? activeCategory.name : "Sortiment entdecken"}
+        text="Stöbern Sie durch unser Sortiment, suchen Sie nach Produkten oder Marken und fragen Sie direkt per WhatsApp an."
+      >
+        <label className="search-field">
+          <Icon name="search" />
+          <span className="visually-hidden">Produkte suchen</span>
+          <input
+            ref={searchInput}
+            type="search"
+            inputMode="search"
+            placeholder="Produkt oder Marke suchen …"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </label>
+      </PageHero>
+
       <div className="catalog-bar">
         <div className="wrap">
-          <label className="search-field">
-            <Icon name="search" />
-            <span className="visually-hidden">Produkte suchen</span>
-            <input
-              ref={searchInput}
-              type="search"
-              inputMode="search"
-              placeholder="Suchen: Ayran, Sucuk, Bulgur …"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </label>
           <div className="chip-row" role="list">
             <button type="button" className={!categoryId ? "chip is-active" : "chip"} onClick={() => chooseCategory(null)}>
               Alle
@@ -103,6 +111,7 @@ function Catalog({ categories, categoryId }) {
                 onClick={() => chooseCategory(category.id)}
               >
                 {category.name}
+                <span className="chip-count">{category.visible_count}</span>
               </button>
             ))}
           </div>
@@ -110,14 +119,11 @@ function Catalog({ categories, categoryId }) {
       </div>
 
       <div className="wrap catalog-body">
-        <div className="catalog-head">
-          <h1>{activeCategory ? activeCategory.name : "Sortiment"}</h1>
-          <p aria-live="polite">
-            {total === null
-              ? "Wird geladen …"
-              : `${total.toLocaleString("de-DE")} Artikel${term ? ` für „${term}“` : ""}`}
-          </p>
-        </div>
+        <p className="catalog-count" aria-live="polite">
+          {total === null
+            ? "Wird geladen …"
+            : `${total.toLocaleString("de-DE")} Produkte${term ? ` für „${term}“` : ""}`}
+        </p>
 
         {error && <p className="notice is-error">{error}</p>}
 

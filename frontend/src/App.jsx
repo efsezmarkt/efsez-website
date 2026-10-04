@@ -16,7 +16,13 @@ import { SUPABASE_URL } from "./lib/config";
 // Der Personalbereich (inkl. Login & Bild-Upload) wird nur geladen, wenn man ihn öffnet.
 const Staff = lazy(() => import("./admin/Staff"));
 
-const ALIASES = { products: "sortiment", product: "produkt", offers: "angebote", contact: "kontakt", admin: "personal" };
+const ALIASES = {
+  products: "sortiment",
+  product: "produkt",
+  offers: "angebote",
+  contact: "kontakt",
+  admin: "personal"
+};
 
 function parseRoute() {
   const raw = window.location.hash.replace(/^#\/?/, "");
@@ -59,7 +65,9 @@ function App() {
   }, [route.page]);
 
   if (!SUPABASE_URL) {
-    return <p style={{ padding: 24 }}>Die Verbindung zur Datenbank ist noch nicht eingerichtet (VITE_SUPABASE_URL fehlt).</p>;
+    return (
+      <p style={{ padding: 24 }}>Die Verbindung zur Datenbank ist noch nicht eingerichtet (VITE_SUPABASE_URL fehlt).</p>
+    );
   }
 
   if (route.page === "personal") {
@@ -72,9 +80,18 @@ function App() {
 
   let page;
   switch (route.page) {
-    case "sortiment":
-      page = <Catalog categories={categories.data} categoryId={Number(route.params.get("kategorie")) || null} />;
+    case "sortiment": {
+      const query = route.params.get("suche") || "";
+      page = (
+        <Catalog
+          key={query}
+          categories={categories.data}
+          categoryId={Number(route.params.get("kategorie")) || null}
+          initialSearch={query === "1" ? "" : query}
+        />
+      );
       break;
+    }
     case "produkt":
       page = <Product id={route.id} settings={site} />;
       break;
@@ -93,12 +110,12 @@ function App() {
   }
 
   return (
-    <>
+    <div className={`site page-${route.page}`}>
       <Header page={route.page} settings={site} />
       <main id="inhalt">{page}</main>
       <Footer settings={site} />
       <WhatsAppFab settings={site} />
-    </>
+    </div>
   );
 }
 

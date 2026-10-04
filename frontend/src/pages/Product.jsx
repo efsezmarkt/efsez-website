@@ -21,7 +21,11 @@ function Product({ id, settings }) {
         setState({ status: "ready", product, related: [] });
         if (product.category_id) {
           const { items } = await loadProducts({ categoryId: product.category_id, limit: 9 });
-          if (alive) setState((current) => ({ ...current, related: items.filter((item) => item.id !== product.id).slice(0, 8) }));
+          if (alive)
+            setState((current) => ({
+              ...current,
+              related: items.filter((item) => item.id !== product.id).slice(0, 8)
+            }));
         }
       })
       .catch(() => alive && setState({ status: "missing", product: null, related: [] }));
@@ -32,23 +36,31 @@ function Product({ id, settings }) {
 
   if (state.status === "loading") {
     return (
-      <div className="wrap product-page" aria-busy="true">
-        <div className="product-page-media skeleton" />
-        <div className="product-page-info">
-          <div className="skeleton" style={{ height: 48, marginBottom: 16 }} />
-          <div className="skeleton" style={{ height: 24, width: "40%" }} />
+      <>
+        <div className="page-band" />
+        <div className="wrap product-page" aria-busy="true">
+          <div className="product-page-media skeleton" />
+          <div className="product-page-info">
+            <div className="skeleton" style={{ height: 48, marginBottom: 16 }} />
+            <div className="skeleton" style={{ height: 24, width: "40%" }} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (state.status === "missing") {
     return (
-      <div className="wrap empty-state">
-        <h1>Dieses Produkt gibt es online nicht mehr</h1>
-        <p>Vielleicht ist es trotzdem im Laden. Fragen Sie uns gern.</p>
-        <a className="btn btn-green" href="#/sortiment">Zum Sortiment</a>
-      </div>
+      <>
+        <div className="page-band" />
+        <div className="wrap empty-state empty-state-page">
+          <h1>Dieses Produkt gibt es online nicht mehr</h1>
+          <p>Vielleicht ist es trotzdem im Laden. Fragen Sie uns gern.</p>
+          <a className="btn btn-green" href="#/sortiment">
+            Zum Sortiment
+          </a>
+        </div>
+      </>
     );
   }
 
@@ -65,15 +77,17 @@ function Product({ id, settings }) {
 
   return (
     <>
-      <nav className="wrap breadcrumb" aria-label="Pfad">
-        <a href="#/sortiment">Sortiment</a>
-        {product.category && (
-          <>
-            <span aria-hidden="true">/</span>
-            <a href={`#/sortiment?kategorie=${product.category.id}`}>{product.category.name}</a>
-          </>
-        )}
-      </nav>
+      <div className="page-band">
+        <nav className="wrap breadcrumb" aria-label="Pfad">
+          <a href="#/sortiment">Sortiment</a>
+          {product.category && (
+            <>
+              <span aria-hidden="true">/</span>
+              <a href={`#/sortiment?kategorie=${product.category.id}`}>{product.category.name}</a>
+            </>
+          )}
+        </nav>
+      </div>
 
       <article className="wrap product-page">
         <div className="product-page-media">
@@ -81,6 +95,7 @@ function Product({ id, settings }) {
         </div>
 
         <div className="product-page-info">
+          {product.category && <span className="chip-label">{product.category.name}</span>}
           <h1>{product.name}</h1>
           <p className="product-page-unit">
             {product.unit}
@@ -88,10 +103,12 @@ function Product({ id, settings }) {
           </p>
 
           <div className="product-page-price">
-            {product.available ? (
-              <PriceTag price={product.price} size="m" />
-            ) : (
+            {!product.available ? (
               <p className="product-card-soldout">Zurzeit nicht vorrätig</p>
+            ) : product.price == null ? (
+              <p className="product-card-soldout">Preis auf Anfrage im Markt</p>
+            ) : (
+              <PriceTag price={product.price} size="m" />
             )}
           </div>
 
@@ -110,7 +127,7 @@ function Product({ id, settings }) {
           )}
 
           {wa && (
-            <a className="btn btn-whatsapp" href={wa} target="_blank" rel="noreferrer">
+            <a className="btn btn-orange" href={wa} target="_blank" rel="noreferrer">
               <Icon name="whatsapp" /> Verfügbarkeit per WhatsApp fragen
             </a>
           )}
@@ -119,7 +136,7 @@ function Product({ id, settings }) {
       </article>
 
       {related.length > 0 && (
-        <section className="section section-mist">
+        <section className="section section-warm">
           <div className="wrap">
             <div className="section-head">
               <h2>Mehr aus {product.category?.name}</h2>

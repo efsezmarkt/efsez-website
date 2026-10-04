@@ -9,10 +9,11 @@ function ProductCard({ product, showFlag = false }) {
   return (
     <a className="product-card" href={`#/produkt/${product.id}`}>
       <span className="product-card-media">
-        <ProductImage src={image} name={product.name} caption={product.category?.name} />
+        <ProductImage src={image} name={product.name} variant="monogram" />
         {showFlag && product.featured && <span className="product-card-flag">Beliebt</span>}
       </span>
       <span className="product-card-body">
+        {product.category?.name && <span className="chip-label">{product.category.name}</span>}
         <span className="product-card-name">{product.name}</span>
         <span className="product-card-unit">
           {product.unit}
