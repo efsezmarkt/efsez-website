@@ -414,6 +414,17 @@
   cursor: pointer;
 }
 
+.a-image-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.a-image-actions .a-button.is-busy {
+  cursor: progress;
+  opacity: 0.7;
+}
+
 /* ---------- Listen ---------- */
 
 .a-filters {

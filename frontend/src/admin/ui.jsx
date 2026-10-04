@@ -22,6 +22,9 @@ export function Toggle({ checked, onChange, label }) {
   );
 }
 
+/** Handy/Tablet: zwei Knöpfe (Kamera oder Galerie). Am PC reicht die Dateiauswahl. */
+const isTouch = typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
+
 export function ImageField({ value, folder, onChange, onMessage, name = "" }) {
   const [busy, setBusy] = useState(false);
 
@@ -39,26 +42,42 @@ export function ImageField({ value, folder, onChange, onMessage, name = "" }) {
     }
   }
 
+  const picker = (camera) => (
+    <input
+      type="file"
+      accept="image/*"
+      {...(camera ? { capture: "environment" } : {})}
+      hidden
+      disabled={busy}
+      onChange={(event) => {
+        handle(event.target.files?.[0]);
+        event.target.value = "";
+      }}
+    />
+  );
+
   return (
     <div className="a-image">
       <span className="a-image-preview">
         <ProductImage src={value} name={name || "Bild"} variant="letter" />
       </span>
       <div className="a-image-actions">
-        <label className="a-button a-button-soft">
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            hidden
-            disabled={busy}
-            onChange={(event) => {
-              handle(event.target.files?.[0]);
-              event.target.value = "";
-            }}
-          />
-          {busy ? "Lädt hoch …" : value ? "Foto ersetzen" : "Foto aufnehmen oder wählen"}
-        </label>
+        {busy ? (
+          <span className="a-button a-button-soft is-busy">Lädt hoch …</span>
+        ) : (
+          <div className="a-image-buttons">
+            {isTouch && (
+              <label className="a-button a-button-soft">
+                {picker(true)}
+                Foto machen
+              </label>
+            )}
+            <label className="a-button a-button-soft">
+              {picker(false)}
+              {isTouch ? "Aus Galerie wählen" : value ? "Bild ersetzen" : "Bild auswählen"}
+            </label>
+          </div>
+        )}
         {value && (
           <button type="button" className="a-link" onClick={() => onChange("")}>
             Bild entfernen
