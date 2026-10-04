@@ -1,43 +1,34 @@
 import ProductImage from "./ProductImage";
-import { formatPrice, whatsappLink } from "../lib/site";
+import PriceTag from "./PriceTag";
+import { basePrice } from "../lib/format";
 
-function ProductCard({ product, categoryImage = "", settings }) {
-  const whatsappText = `Hallo EFSE'Z Markt, ich interessiere mich für ${product.name}.`;
-  const price = formatPrice(product.price);
+function ProductCard({ product, showFlag = false }) {
+  const image = product.image || product.category?.image || "";
+  const base = basePrice(product.price, product.unit);
 
   return (
-    <article className="product-card">
-      <a className="product-image" href={`#/product/${product.id}`}>
-        {product.featured && <span className="featured-badge">Beliebt</span>}
-        <ProductImage product={product} categoryImage={categoryImage} />
-      </a>
-
-      <div className="product-info">
-        <p className="product-category">{product.category}</p>
-        <h3>
-          <a href={`#/product/${product.id}`}>{product.name}</a>
-        </h3>
-        {product.brand && <p className="product-brand">{product.brand}</p>}
-
-        <div className="product-meta">
-          {price && <strong className="product-price">{price}</strong>}
-          {product.unit && <span className="product-unit">{product.unit}</span>}
-        </div>
-
-        {!product.available && <p className="availability-warning">Aktuell nicht verfügbar</p>}
-
-        {product.description && <p className="product-description">{product.description}</p>}
-
-        <div className="product-actions">
-          <a href={`#/product/${product.id}`} className="product-button">
-            Details
-          </a>
-          <a href={whatsappLink(settings, whatsappText)} className="product-button product-button-secondary">
-            Anfragen
-          </a>
-        </div>
-      </div>
-    </article>
+    <a className="product-card" href={`#/produkt/${product.id}`}>
+      <span className="product-card-media">
+        <ProductImage src={image} name={product.name} caption={product.category?.name} />
+        {showFlag && product.featured && <span className="product-card-flag">Beliebt</span>}
+      </span>
+      <span className="product-card-body">
+        <span className="product-card-name">{product.name}</span>
+        <span className="product-card-unit">
+          {product.unit}
+          {base && <span className="product-card-base"> ({base})</span>}
+        </span>
+        <span className="product-card-price">
+          {!product.available ? (
+            <span className="product-card-soldout">Zurzeit nicht da</span>
+          ) : product.price == null ? (
+            <span className="product-card-soldout">Preis im Markt</span>
+          ) : (
+            <PriceTag price={product.price} size="s" />
+          )}
+        </span>
+      </span>
+    </a>
   );
 }
 

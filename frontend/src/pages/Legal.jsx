@@ -1,0 +1,45 @@
+/**
+ * Impressum und Datenschutz. Der Text wird im Personalbereich gepflegt.
+ * Solange nichts hinterlegt ist, steht hier ein klar markierter Hinweis.
+ */
+function Legal({ kind, settings }) {
+  const isImprint = kind === "impressum";
+  const text = isImprint ? settings.imprint_text : settings.privacy_text;
+
+  return (
+    <div className="wrap legal-page">
+      <h1>{isImprint ? "Impressum" : "Datenschutzerklärung"}</h1>
+      {text ? (
+        <div className="legal-text">
+          {text.split(/\n{2,}/).map((block, index) => (
+            <p key={index}>
+              {block.split("\n").map((line, i, lines) => (
+                <span key={i}>
+                  {line}
+                  {i < lines.length - 1 && <br />}
+                </span>
+              ))}
+            </p>
+          ))}
+        </div>
+      ) : (
+        <div className="legal-text">
+          <p>
+            EFSE'Z Markt
+            <br />
+            {settings.address}
+            {settings.phone && (
+              <>
+                <br />
+                Telefon: {settings.phone}
+              </>
+            )}
+          </p>
+          <p className="notice">Die vollständigen Angaben werden gerade ergänzt.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Legal;

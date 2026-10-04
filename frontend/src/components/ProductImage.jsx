@@ -1,20 +1,37 @@
-/**
- * Produktbild mit Platzhalter: hat das Produkt kein eigenes Bild, wird das Bild der
- * Kategorie gezeigt – und wenn auch das fehlt, eine ruhige Kachel mit Anfangsbuchstaben.
- */
-function ProductImage({ product, categoryImage = "", className = "" }) {
-  const src = product.image || categoryImage;
+import { useState } from "react";
+import { imageUrl } from "../lib/config";
 
-  if (src) {
-    return <img className={className} src={src} alt={product.name} loading="lazy" />;
+/**
+ * Produktbild. Ohne Foto erscheint ein Regaletikett mit dem Produktnamen
+ * (variant="label", optional mit Kategorie als caption) bzw. in kleinen Vorschaubildern nur der Anfangsbuchstabe (variant="letter").
+ */
+function ProductImage({ src, name, caption = "", eager = false, variant = "label", className = "" }) {
+  const [failed, setFailed] = useState(false);
+  const url = imageUrl(src);
+
+  if (!url || failed) {
+    return variant === "letter" ? (
+      <span className={`product-placeholder ${className}`} role="img" aria-label={name}>
+        {(name || "?").trim().charAt(0).toUpperCase()}
+      </span>
+    ) : (
+      <span className={`shelf-label ${caption ? "has-caption" : ""} ${className}`} role="img" aria-label={name}>
+        <span className="shelf-label-initial" aria-hidden="true">{(name || "?").trim().charAt(0).toUpperCase()}</span>
+        <span className="shelf-label-text">{caption || name}</span>
+      </span>
+    );
   }
 
-  const initial = (product.name || "?").trim().charAt(0).toUpperCase();
   return (
-    <div className={`product-placeholder ${className}`} aria-label={product.name} role="img">
-      <span>{initial}</span>
-      <small>{product.category || "Produkt"}</small>
-    </div>
+    <img
+      className={className}
+      src={url}
+      alt={name}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={eager ? "high" : "auto"}
+      onError={() => setFailed(true)}
+    />
   );
 }
 

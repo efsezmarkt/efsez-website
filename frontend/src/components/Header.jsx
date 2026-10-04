@@ -1,96 +1,85 @@
 import { useEffect, useState } from "react";
-import logo from "../assets/images/logo.png";
-import { whatsappLink } from "../lib/site";
+import Icon from "./Icon";
+import { whatsappLink } from "../lib/format";
 
-function Header({ currentPage, settings }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const isActive = (page) => currentPage === page || (page === "products" && currentPage === "product");
+const NAV = [
+  { page: "angebote", label: "Angebote" },
+  { page: "sortiment", label: "Sortiment" },
+  { page: "kontakt", label: "Markt & Kontakt" }
+];
 
-  const scrollHomeSection = (sectionId) => {
-    window.location.hash = "/";
-    window.setTimeout(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-    }, 40);
-    setMenuOpen(false);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+function Header({ page, settings }) {
+  const [open, setOpen] = useState(false);
+  const wa = whatsappLink(settings, "Hallo EFSE'Z Markt, ");
 
   useEffect(() => {
-    if (!menuOpen) return undefined;
+    // Menü schließen, sobald sich die Seite ändert.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false);
+  }, [page]);
 
-    const closeOnScroll = () => setMenuOpen(false);
-    window.addEventListener("scroll", closeOnScroll, { passive: true });
-    window.addEventListener("wheel", closeOnScroll, { passive: true });
-    window.addEventListener("touchmove", closeOnScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", closeOnScroll);
-      window.removeEventListener("wheel", closeOnScroll);
-      window.removeEventListener("touchmove", closeOnScroll);
-    };
-  }, [menuOpen]);
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (event) => event.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <header className={`header ${currentPage === "home" ? "" : "header-solid"} ${menuOpen ? "menu-open" : ""}`}>
-      <button
-        type="button"
-        className="menu-scrim"
-        aria-label="Menü schließen"
-        onClick={closeMenu}
-      />
+    <header className={`site-header ${open ? "is-open" : ""}`}>
+      <a className="skip-link" href="#inhalt">Zum Inhalt</a>
+      <div className="site-header-bar wrap">
+        <a className="site-logo" href="#/" aria-label="EFSE'Z Markt – Startseite">
+          <img src="/assets/images/logo.png" alt="" width="48" height="48" />
+          <span>
+            <strong>EFSE'Z Markt</strong>
+            <small>Nürnberg</small>
+          </span>
+        </a>
 
-      <a href="#/" className="logo-area">
-        <img src={logo} alt="EFSE'Z Markt Logo" />
-      </a>
-
-      <button
-        type="button"
-        className="menu-toggle"
-        aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-        aria-expanded={menuOpen}
-        aria-controls="main-navigation"
-        onClick={() => setMenuOpen((open) => !open)}
-      >
-        <span />
-        <span />
-        <span />
-      </button>
-
-      <div id="main-navigation" className={menuOpen ? "header-menu open" : "header-menu"}>
-        <nav className="main-nav">
-          <ul className="nav-links">
-            <li><a className={isActive("home") ? "active" : ""} href="#/" onClick={closeMenu}>Home</a></li>
-            <li><a className={isActive("offers") ? "active" : ""} href="#/offers" onClick={closeMenu}>Angebote</a></li>
-            <li><a className={isActive("products") ? "active" : ""} href="#/products" onClick={closeMenu}>Produkte</a></li>
-            <li><a href="#/" onClick={() => scrollHomeSection("contact")}>Markt</a></li>
-            <li><a className={isActive("contact") ? "active" : ""} href="#/contact" onClick={closeMenu}>Kontakt</a></li>
-          </ul>
+        <nav className="site-nav" aria-label="Hauptmenü">
+          {NAV.map((item) => (
+            <a key={item.page} href={`#/${item.page}`} aria-current={page === item.page ? "page" : undefined}>
+              {item.label}
+            </a>
+          ))}
         </nav>
 
-        <div className="header-actions">
-          <a href={whatsappLink(settings)} className="header-whatsapp" onClick={closeMenu}>
-            WhatsApp
+        <div className="site-header-actions">
+          <a className="icon-button" href="#/sortiment?suche=1" aria-label="Sortiment durchsuchen">
+            <Icon name="search" />
           </a>
-          <a
-            className={isActive("admin") ? "staff-access active" : "staff-access"}
-            href="#/admin"
-            onClick={closeMenu}
-            aria-label="Personalzugang"
-            title="Personalzugang"
+          {wa && (
+            <a className="btn btn-whatsapp site-header-wa" href={wa} target="_blank" rel="noreferrer">
+              <Icon name="whatsapp" />
+              <span>WhatsApp</span>
+            </a>
+          )}
+          <button
+            type="button"
+            className="icon-button site-menu-toggle"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? "Menü schließen" : "Menü öffnen"}
+            onClick={() => setOpen((value) => !value)}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8.4 11.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Z" />
-              <path d="M3.2 18.8c.35-2.75 2.5-4.7 5.2-4.7 1.45 0 2.7.55 3.62 1.48" />
-              <path d="M17.2 13.4v-1.25a2.2 2.2 0 0 0-4.4 0v1.25" />
-              <path d="M12 13.4h6.4v5.8H12z" />
-            </svg>
-            <span>Personalzugang</span>
-          </a>
+            <Icon name={open ? "close" : "menu"} />
+          </button>
         </div>
       </div>
+
+      <nav id="mobile-menu" className="mobile-menu" aria-label="Menü" hidden={!open}>
+        {NAV.map((item) => (
+          <a key={item.page} href={`#/${item.page}`} aria-current={page === item.page ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))}
+        {wa && (
+          <a className="btn btn-whatsapp" href={wa} target="_blank" rel="noreferrer">
+            <Icon name="whatsapp" /> Per WhatsApp schreiben
+          </a>
+        )}
+      </nav>
     </header>
   );
 }

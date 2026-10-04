@@ -1,101 +1,109 @@
-import CategoryGrid from "../components/CategoryGrid";
-import FeaturedProducts from "../components/FeaturedProducts";
-import ProductCarousel from "../components/ProductCarousel";
-import OfferSlider from "../components/OfferSlider";
-import InfoSection from "../components/InfoSection";
-import ContactSection from "../components/ContactSection";
-import ContactFormSection from "../components/ContactFormSection";
-import BrandSection from "../components/BrandSection";
-import StatsSection from "../components/StatsSection";
-import "../styles/brands.css";
-import "../styles/contact.css";
-import "../styles/stats.css";
-import "../styles/categories.css";
-import "../styles/products.css";
-import "../styles/info.css";
-import { formatDate } from "../lib/site";
+import OfferCarousel from "../components/OfferCarousel";
+import ProductCard from "../components/ProductCard";
+import StoreInfo from "../components/StoreInfo";
+import ContactForm from "../components/ContactForm";
+import Icon from "../components/Icon";
+import { loadProducts } from "../lib/db";
+import { useCached } from "../lib/useAsync";
+import { offerPeriod, whatsappLink } from "../lib/format";
 
-function Home({ featured, offers, categories, settings, productTotal }) {
-  // Alle aktiven Angebotspositionen laufen im Hero-Fenster durch.
-  const deals = offers.flatMap((offer) => offer.items);
-  const firstOffer = offers.find((offer) => offer.items.length > 0);
-  const offerLabel = firstOffer?.ends_at ? `bis ${formatDate(firstOffer.ends_at)}` : "";
-  const categoryImages = Object.fromEntries(categories.map((category) => [category.name, category.image]));
+const loadFeatured = () => loadProducts({ featured: true, limit: 8 }).then((result) => result.items);
+
+function Home({ settings, categories, offers }) {
+  const featured = useCached("featured", loadFeatured, []);
+  const deals = offers.data.flatMap((offer) => offer.items);
+  const firstOffer = offers.data.find((offer) => offer.items.length);
+  const wa = whatsappLink(settings, "Hallo EFSE'Z Markt, ");
 
   return (
     <>
-      <section id="home" className="hero">
-        <div className="hero-bg-leaf leaf-1"></div>
-        <div className="hero-bg-leaf leaf-2"></div>
-        <div className="hero-bg-leaf leaf-3"></div>
-        <div className="hero-bg-leaf leaf-4"></div>
-        <div className="hero-bg-leaf leaf-5"></div>
-        <div className="hero-bg-leaf leaf-6"></div>
-
-        <div className="hero-dots"></div>
-        <div className="hero-plant-lines"></div>
-
-        <div className="hero-inner">
-          <div className="hero-text">
-            <p className="hero-eyebrow">EFSE&apos;Z Markt Nürnberg</p>
-            <h2>
-              International frisch.
-              <span>Direkt um die Ecke.</span>
-            </h2>
-
-            <div className="hero-line">
-              <span></span>
-              <div></div>
-            </div>
-
-            <p>
-              Internationale Lebensmittel, frische Thekenprodukte, Backwaren und
-              Wochenangebote in einem Markt, der vertraut wirkt und trotzdem
-              jeden Einkauf ein bisschen besonderer macht.
-            </p>
-
-            <div className="hero-badges" aria-label="Sortimentsbereiche">
-              <span>Frische Theke</span>
-              <span>Internationale Marken</span>
-              <span>Wochenangebote</span>
-            </div>
-
-            <div className="hero-buttons">
-              <a href="#/products" className="btn-primary">Sortiment ansehen</a>
-              {deals.length > 0 && (
-                <a href="#/offers" className="btn-secondary">Alle Angebote</a>
-              )}
-            </div>
-          </div>
-
-          <div className="hero-visual">
+      <section className="hero">
+        <div className="wrap hero-grid">
+          <div className="hero-offers">
             {deals.length > 0 ? (
-              <OfferSlider items={deals} categoryImages={categoryImages} offerLabel={offerLabel} />
+              <OfferCarousel deals={deals} period={offerPeriod(firstOffer)} />
+            ) : offers.loading ? (
+              <div className="offer-carousel offer-carousel-loading skeleton" aria-hidden="true" />
             ) : (
-              <>
-                <div className="hero-logo-card">
-                  <img src="/assets/images/logo.png" alt="EFSE'Z Markt Logo" />
-                </div>
-                <div className="hero-assortment-note">
-                  <span>Heute im Regal</span>
-                  <strong>Tee, Sucuk, Oliven, Baklava</strong>
-                </div>
-              </>
+              <div className="hero-logo">
+                <img src="/assets/images/logo.png" alt="EFSE'Z Markt – Ihr Markt für jeden Geschmack" width="320" height="320" />
+              </div>
             )}
           </div>
-        </div>
 
-        <ProductCarousel products={featured} />
-        <div className="hero-wave"></div>
+          <div className="hero-copy">
+            <h1>Ihr Markt für jeden Geschmack.</h1>
+            <p className="hero-lead">
+              Internationale Lebensmittel, frische Theke und Küche in Nürnberg.
+              Stöbern Sie im Sortiment und fragen Sie einfach per WhatsApp nach.
+            </p>
+            <div className="hero-actions">
+              <a className="btn btn-primary" href="#/sortiment">Sortiment ansehen</a>
+              {wa ? (
+                <a className="btn btn-ghost" href={wa} target="_blank" rel="noreferrer">
+                  <Icon name="whatsapp" /> WhatsApp
+                </a>
+              ) : (
+                <a className="btn btn-ghost" href="#/kontakt">Anfahrt & Kontakt</a>
+              )}
+            </div>
+            <StoreInfo settings={settings} compact />
+          </div>
+        </div>
       </section>
 
-      <StatsSection productTotal={productTotal} settings={settings} />
-      <CategoryGrid categories={categories} />
-      <FeaturedProducts products={featured} categories={categories} settings={settings} />
-      <BrandSection />
-      <InfoSection />
-      <ContactFormSection />
-      <ContactSection settings={settings} />
+      {categories.data.length > 0 && (
+        <section className="section">
+          <div className="wrap">
+            <div className="section-head">
+              <h2>Sortiment</h2>
+              <a href="#/sortiment">Alle Produkte</a>
+            </div>
+            <ul className="aisle-list">
+              {categories.data.map((category) => (
+                <li key={category.id}>
+                  <a className="aisle" href={`#/sortiment?kategorie=${category.id}`}>
+                    <span className="aisle-text">
+                      <span className="aisle-name">{category.name}</span>
+                      <span className="aisle-count">{category.visible_count} Artikel</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {featured.data.length > 0 && (
+        <section className="section section-mist">
+          <div className="wrap">
+            <div className="section-head">
+              <h2>Beliebt bei unseren Kunden</h2>
+              <a href="#/sortiment">Mehr entdecken</a>
+            </div>
+            <div className="product-grid">
+              {featured.data.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="section" id="markt">
+        <div className="wrap visit-grid">
+          <div>
+            <h2>So finden Sie uns</h2>
+            <StoreInfo settings={settings} />
+          </div>
+          <div>
+            <h2>Schreiben Sie uns</h2>
+            <p className="section-lead">Sie suchen ein bestimmtes Produkt oder planen eine Feier? Wir besorgen gern, was im Regal fehlt.</p>
+            <ContactForm />
+          </div>
+        </div>
+      </section>
     </>
   );
 }

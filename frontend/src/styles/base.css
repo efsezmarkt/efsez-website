@@ -1,0 +1,215 @@
+/* =====================================================================
+   EFSE'Z Markt – Grundlagen
+   Ein lautes Element: das Preisschild (Paprika auf Weiß, schmale Ziffern).
+   Alles andere bleibt ruhig: Marktgrün, Weiß, ein kühles Hellgrün.
+   ===================================================================== */
+
+:root {
+  /* Farben (aus dem Logo abgeleitet) */
+  --green-950: #082a1b;
+  --green-900: #0d3b26;
+  --green-700: #17643f;
+  --green-100: #e4efe6;
+  --mist: #f2f6f2;
+  --paper: #ffffff;
+  --ink: #17231c;
+  --muted: #5b6a60;
+  --line: #d9e3db;
+  --paprika: #c4122f;
+  --paprika-dark: #9b0e25;
+  --saffron: #f2a51e;
+  --leaf: #9cc33f;
+
+  /* Schrift */
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+
+  /* Typo-Skala (Faktor ~1.25) */
+  --step--1: 0.84rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.5rem;
+  --step-3: 1.95rem;
+  --step-4: 2.6rem;
+  --step-5: 3.4rem;
+
+  /* Abstände & Form */
+  --gutter: clamp(16px, 4vw, 40px);
+  --max: 1200px;
+  --radius-s: 6px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+  --header-h: 64px;
+  --shadow-lift: 0 1px 2px rgba(13, 59, 38, 0.06), 0 8px 24px rgba(13, 59, 38, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--saffron);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Knöpfe ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--paprika);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--paprika-dark);
+}
+
+.btn-green {
+  background: var(--green-900);
+  color: #fff;
+}
+
+.btn-green:hover {
+  background: var(--green-700);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-whatsapp {
+  background: #1f9e55;
+  color: #fff;
+}
+
+.btn-whatsapp:hover {
+  background: #17844a;
+}
+
+.btn svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+/* ---------- Skelett beim Laden ---------- */
+
+.skeleton {
+  background: linear-gradient(90deg, #eef2ee 0%, #f7f9f7 50%, #eef2ee 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: var(--radius-m);
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

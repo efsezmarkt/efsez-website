@@ -1,104 +1,103 @@
-import { useCallback, useEffect, useState } from "react";
-import { api } from "./api";
+import { Suspense, lazy, useEffect, useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import WhatsAppFab from "./components/WhatsAppFab";
 import Home from "./pages/Home";
-import Contact from "./pages/Contact";
-import Products from "./pages/Products";
+import Catalog from "./pages/Catalog";
+import Product from "./pages/Product";
 import Offers from "./pages/Offers";
-import ProductDetail from "./pages/ProductDetail";
-import Admin from "./pages/Admin";
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
-import { DEFAULT_SETTINGS } from "./lib/site";
-import "./styles/header.css";
-import "./styles/footer.css";
-import "./styles/floatingWhatsApp.css";
-import "./styles/offers.css";
+import Contact from "./pages/Contact";
+import Legal from "./pages/Legal";
+import { loadCategories, loadOffers, loadSettings } from "./lib/db";
+import { useCached } from "./lib/useAsync";
+import { DEFAULT_SETTINGS } from "./lib/format";
+import { SUPABASE_URL } from "./lib/config";
 
-function parseRoute(hash) {
-  const cleanHash = hash.replace(/^#\/?/, "");
-  const [pagePart = "home", id] = cleanHash.split("/");
-  const [page, search] = pagePart.split("?");
-  return {
-    page: page || "home",
-    id: id ? Number(id) : null,
-    params: new URLSearchParams(search || "")
-  };
+// Der Personalbereich (inkl. Login & Bild-Upload) wird nur geladen, wenn man ihn öffnet.
+const Staff = lazy(() => import("./admin/Staff"));
+
+const ALIASES = { products: "sortiment", product: "produkt", offers: "angebote", contact: "kontakt", admin: "personal" };
+
+function parseRoute() {
+  const raw = window.location.hash.replace(/^#\/?/, "");
+  const [path, search = ""] = raw.split("?");
+  const [first = "", second] = path.split("/");
+  const page = ALIASES[first] || first || "start";
+  return { page, id: second ? Number(second) : null, params: new URLSearchParams(search) };
 }
 
 function App() {
-  const [route, setRoute] = useState(() => parseRoute(window.location.hash));
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
-  const [categories, setCategories] = useState([]);
-  const [offers, setOffers] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [productTotal, setProductTotal] = useState(null);
+  const [route, setRoute] = useState(parseRoute);
+  const settings = useCached("settings", loadSettings, {});
+  const categories = useCached("categories", loadCategories, []);
+  const offers = useCached("offers", loadOffers, []);
+  const site = { ...DEFAULT_SETTINGS, ...settings.data };
 
-  const loadSite = useCallback(async () => {
-    const results = await Promise.allSettled([
-      api.getSettings(),
-      api.getCategories(),
-      api.getOffers(),
-      api.getProducts({ featured: 1, limit: 12 })
-    ]);
-    const [settingsResult, categoriesResult, offersResult, featuredResult] = results;
-    if (settingsResult.status === "fulfilled") setSettings({ ...DEFAULT_SETTINGS, ...settingsResult.value });
-    if (categoriesResult.status === "fulfilled") setCategories(categoriesResult.value);
-    if (offersResult.status === "fulfilled") setOffers(offersResult.value);
-    if (featuredResult.status === "fulfilled") {
-      setFeatured(featuredResult.value.items);
-    }
-    try {
-      const all = await api.getProducts({ limit: 1 });
-      setProductTotal(all.total);
-    } catch {
-      setProductTotal(null);
-    }
+  useEffect(() => {
+    const onChange = () => {
+      const next = parseRoute();
+      setRoute((current) => {
+        if (current.page !== next.page || current.id !== next.id) window.scrollTo(0, 0);
+        return next;
+      });
+    };
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
   }, []);
 
   useEffect(() => {
-    function handleHashChange() {
-      setRoute(parseRoute(window.location.hash));
-      window.scrollTo({ top: 0, behavior: "auto" });
-    }
+    const titles = {
+      start: "EFSE'Z Markt Nürnberg – Internationale Lebensmittel",
+      sortiment: "Sortiment – EFSE'Z Markt Nürnberg",
+      angebote: "Angebote – EFSE'Z Markt Nürnberg",
+      kontakt: "Kontakt & Anfahrt – EFSE'Z Markt Nürnberg",
+      impressum: "Impressum – EFSE'Z Markt",
+      datenschutz: "Datenschutz – EFSE'Z Markt",
+      personal: "Personalbereich – EFSE'Z Markt"
+    };
+    if (titles[route.page]) document.title = titles[route.page];
+  }, [route.page]);
 
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
+  if (!SUPABASE_URL) {
+    return <p style={{ padding: 24 }}>Die Verbindung zur Datenbank ist noch nicht eingerichtet (VITE_SUPABASE_URL fehlt).</p>;
+  }
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadSite();
-  }, [loadSite]);
+  if (route.page === "personal") {
+    return (
+      <Suspense fallback={<div className="staff-loading">Personalbereich wird geladen…</div>}>
+        <Staff />
+      </Suspense>
+    );
+  }
+
+  let page;
+  switch (route.page) {
+    case "sortiment":
+      page = <Catalog categories={categories.data} categoryId={Number(route.params.get("kategorie")) || null} />;
+      break;
+    case "produkt":
+      page = <Product id={route.id} settings={site} />;
+      break;
+    case "angebote":
+      page = <Offers offers={offers.data} loading={offers.loading} />;
+      break;
+    case "kontakt":
+      page = <Contact settings={site} />;
+      break;
+    case "impressum":
+    case "datenschutz":
+      page = <Legal kind={route.page} settings={site} />;
+      break;
+    default:
+      page = <Home settings={site} categories={categories} offers={offers} />;
+  }
 
   return (
     <>
-      <Header currentPage={route.page} settings={settings} />
-
-      <main>
-        {route.page === "products" ? (
-          <Products categories={categories} settings={settings} initialCategory={route.params.get("kategorie") || "Alle"} />
-        ) : route.page === "product" ? (
-          <ProductDetail id={route.id} settings={settings} />
-        ) : route.page === "offers" ? (
-          <Offers offers={offers} categories={categories} />
-        ) : route.page === "admin" ? (
-          <Admin onRefresh={loadSite} />
-        ) : route.page === "contact" ? (
-          <Contact settings={settings} />
-        ) : (
-          <Home
-            featured={featured}
-            offers={offers}
-            categories={categories}
-            settings={settings}
-            productTotal={productTotal}
-          />
-        )}
-      </main>
-
-      <Footer settings={settings} />
-      <FloatingWhatsApp settings={settings} />
+      <Header page={route.page} settings={site} />
+      <main id="inhalt">{page}</main>
+      <Footer settings={site} />
+      <WhatsAppFab settings={site} />
     </>
   );
 }
