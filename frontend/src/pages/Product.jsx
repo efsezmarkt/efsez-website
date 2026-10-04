@@ -4,7 +4,7 @@ import ProductCard from "../components/ProductCard";
 import PriceTag from "../components/PriceTag";
 import Icon from "../components/Icon";
 import { loadProduct, loadProducts } from "../lib/db";
-import { basePrice, whatsappLink } from "../lib/format";
+import { basePrice, formatPrice, whatsappLink } from "../lib/format";
 
 function Product({ id, settings }) {
   const [state, setState] = useState({ status: "loading", product: null, related: [] });
@@ -66,13 +66,16 @@ function Product({ id, settings }) {
 
   const { product, related } = state;
   const image = product.image || product.category?.image || "";
-  const base = basePrice(product.price, product.unit);
+  const variants = product.variant_count > 1 ? product.variants || [] : [];
+  const range = variants.length > 0 && product.price_from != null && Number(product.price_from) < Number(product.price_to);
+  const shownPrice = range ? product.price_from : product.price ?? product.price_from ?? null;
+  const base = variants.length ? "" : basePrice(product.price, product.unit);
   const wa = whatsappLink(settings, `Hallo EFSE'Z Markt, ist „${product.name}“ gerade da?`);
   const facts = [
     ["Marke", product.brand],
     ["Herkunft", product.origin],
     ["Allergene", product.allergens],
-    ["Barcode", product.barcode]
+    ["Barcode", product.variant_count > 1 ? "" : product.barcode]
   ].filter(([, value]) => value);
 
   return (
@@ -98,22 +101,47 @@ function Product({ id, settings }) {
           {product.category && <span className="chip-label">{product.category.name}</span>}
           <h1>{product.name}</h1>
           <p className="product-page-unit">
-            {product.unit}
+            {variants.length ? `${variants.length} Sorten & Größen` : product.unit}
             {base && <span> ({base})</span>}
           </p>
 
           <div className="product-page-price">
             {!product.available ? (
               <p className="product-card-soldout">Zurzeit nicht vorrätig</p>
-            ) : product.price == null ? (
+            ) : shownPrice == null ? (
               <p className="product-card-soldout">Preis auf Anfrage im Markt</p>
             ) : (
-              <PriceTag price={product.price} size="m" />
+              <PriceTag price={shownPrice} size="m" from={range} />
             )}
           </div>
 
           {product.description && <p className="product-page-text">{product.description}</p>}
           {product.details && <p className="product-page-text">{product.details}</p>}
+
+          {variants.length > 0 && (
+            <div className="variant-list">
+              <h2>Sorten & Größen</h2>
+              <ul>
+                {variants.map((variant) => {
+                  const variantBase = basePrice(variant.price, variant.unit);
+                  return (
+                    <li key={variant.id}>
+                      <span className="variant-name">
+                        {variant.name}
+                        {(variant.unit || variantBase) && (
+                          <small>
+                            {variant.unit}
+                            {variantBase && ` (${variantBase})`}
+                          </small>
+                        )}
+                      </span>
+                      <span className="variant-price">{variant.price != null ? formatPrice(variant.price) : "im Markt"}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
 
           {facts.length > 0 && (
             <dl className="product-facts">

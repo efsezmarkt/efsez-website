@@ -34,7 +34,11 @@ function ProductsTab({ categories, notify, refresh }) {
       try {
         let query = supabase
           .from("products")
-          .select("id,name,image,unit,price,featured,visible,available,source,category_id,category:categories(name,image)", { count: "exact" });
+          .select(
+            "id,name,image,unit,price,featured,visible,available,source,category_id,variant_count,category:categories(name,image)",
+            { count: "exact" }
+          )
+          .is("merged_into", null);
         if (filter.categoryId) query = query.eq("category_id", Number(filter.categoryId));
         if (filter.visibility === "sichtbar") query = query.eq("visible", true);
         if (filter.visibility === "versteckt") query = query.eq("visible", false);
@@ -42,7 +46,7 @@ function ProductsTab({ categories, notify, refresh }) {
         if (filter.visibility === "ohne-preis") query = query.is("price", null);
         if (filter.visibility === "ohne-bild") query = query.eq("image", "");
         const term = filter.term.replace(/[,()*%\\]/g, " ").trim();
-        if (term) query = query.or(`name.ilike.*${term}*,brand.ilike.*${term}*,barcode.ilike.${term}*`);
+        if (term) query = query.or(`search_text.ilike.*${term}*,barcode.ilike.${term}*`);
         const { data, count, error } = await query.order("name").range(nextPage * PAGE, nextPage * PAGE + PAGE - 1);
         if (error) throw error;
         if (id !== request.current) return;
@@ -82,6 +86,39 @@ function ProductsTab({ categories, notify, refresh }) {
       notify(`${data.length} Produkte ${label}.`);
       setSelected(new Set());
       await load(0);
+      refresh();
+    } catch (error) {
+      notify(error.message);
+    }
+  }
+
+  async function mergeSelected() {
+    const chosen = items.filter((item) => selected.has(item.id));
+    if (chosen.length < 2) return;
+    // Hauptprodukt: zuerst eins, das schon auf der Website ist, sonst das erste in der Liste
+    const main = chosen.find((item) => item.visible) || chosen[0];
+    const title = window.prompt(
+      `${chosen.length} Artikel zu einem Produkt zusammenfassen. Die anderen erscheinen als „Sorten & Größen“.\n\nName auf der Website:`,
+      main.name
+    );
+    if (title === null) return;
+    try {
+      const result = check(await supabase.rpc("merge_products", { p_main: main.id, p_ids: chosen.map((item) => item.id), p_title: title }));
+      notify(`${result.merged} Artikel unter „${title || main.name}“ zusammengefasst.`);
+      setSelected(new Set());
+      await load(0);
+      refresh();
+    } catch (error) {
+      notify(error.message);
+    }
+  }
+
+  async function unmerge(variant) {
+    try {
+      check(await supabase.rpc("unmerge_product", { p_id: variant.id }));
+      notify(`„${variant.name}“ ist wieder ein eigenes Produkt (versteckt).`);
+      const full = check(await supabase.from("products").select("variants,variant_count").eq("id", form.id).single());
+      setForm((current) => ({ ...current, variants: full.variants, variant_count: full.variant_count }));
       refresh();
     } catch (error) {
       notify(error.message);
@@ -216,6 +253,34 @@ function ProductsTab({ categories, notify, refresh }) {
           </Field>
         </div>
 
+        {form.variant_count > 1 && (
+          <div className="a-variants">
+            <h3>Sorten & Größen ({form.variant_count})</h3>
+            <p className="a-hint">
+              Diese Kassenartikel erscheinen auf der Website gesammelt unter diesem Produkt. Preise kommen weiter aus
+              dem Kassen-Import.
+            </p>
+            <ul>
+              {(form.variants || []).map((variant) => (
+                <li key={variant.id}>
+                  <span>
+                    {variant.name}
+                    {variant.unit ? <small> {variant.unit}</small> : null}
+                  </span>
+                  <span className="a-variant-price">{variant.price !== null ? formatPrice(variant.price) : "–"}</span>
+                  {variant.id !== form.id ? (
+                    <button type="button" className="a-link" onClick={() => unmerge(variant)}>
+                      Herauslösen
+                    </button>
+                  ) : (
+                    <small className="a-variant-main">Hauptartikel</small>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="a-toggles">
           <Toggle checked={form.visible} onChange={set("visible")} label="Auf der Website zeigen" />
           <Toggle checked={form.featured} onChange={set("featured")} label="Beliebt (Startseite)" />
@@ -285,6 +350,9 @@ function ProductsTab({ categories, notify, refresh }) {
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </select>
+              {selected.size > 1 && (
+                <button type="button" onClick={mergeSelected}>Zusammenfassen</button>
+              )}
               <button type="button" className="is-danger" onClick={removeSelected}>Löschen</button>
             </>
           ) : filter.categoryId ? (
@@ -320,7 +388,7 @@ function ProductsTab({ categories, notify, refresh }) {
                 <strong>{product.name}</strong>
                 <small>
                   {product.category?.name || "Ohne Kategorie"}
-                  {product.unit ? `, ${product.unit}` : ""}
+                  {product.variant_count > 1 ? `, ${product.variant_count} Sorten & Größen` : product.unit ? `, ${product.unit}` : ""}
                 </small>
               </span>
               <span className="a-row-price">{product.price !== null ? formatPrice(product.price) : "kein Preis"}</span>

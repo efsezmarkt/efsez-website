@@ -4,7 +4,7 @@ import { formatPrice, splitPrice } from "../lib/format";
  * Das Preisschild: schmale, große Ziffern, Cent hochgestellt, alter Preis darüber.
  * size: "xl" (Startseite), "m" (Kacheln), "s" (Listen)
  */
-function PriceTag({ price, oldPrice = null, discount = null, size = "m", label = "" }) {
+function PriceTag({ price, oldPrice = null, discount = null, size = "m", label = "", from = false }) {
   if (price === null || price === undefined) {
     return label ? (
       <span className={`price-tag price-tag-${size} price-tag-text`}>
@@ -16,10 +16,11 @@ function PriceTag({ price, oldPrice = null, discount = null, size = "m", label =
   const { euros, cents } = splitPrice(price);
 
   return (
-    <span className={`price-tag price-tag-${size}`} aria-label={`Preis ${formatPrice(price)}${oldPrice ? `, statt ${formatPrice(oldPrice)}` : ""}`}>
+    <span className={`price-tag price-tag-${size}`} aria-label={`Preis ${from ? "ab " : ""}${formatPrice(price)}${oldPrice ? `, statt ${formatPrice(oldPrice)}` : ""}`}>
       {discount ? <span className="price-tag-discount">−{discount}%</span> : null}
       {oldPrice ? <s className="price-tag-old">{formatPrice(oldPrice)}</s> : null}
       <span className="price-tag-amount" aria-hidden="true">
+        {from && <span className="price-tag-from">ab</span>}
         <span className="price-tag-euros">{euros}</span>
         <span className="price-tag-cents">{cents}</span>
       </span>

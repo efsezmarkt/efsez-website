@@ -7,7 +7,8 @@ import { SUPABASE_URL, supabaseHeaders, PAGE_SIZE } from "./config";
  */
 const rest = new PostgrestClient(`${SUPABASE_URL}/rest/v1`, { headers: supabaseHeaders() });
 
-const PRODUCT_FIELDS = "id,name,image,unit,price,featured,available,brand,category_id,category:categories(name,image)";
+const PRODUCT_FIELDS =
+  "id,name,image,unit,price,featured,available,brand,category_id,variant_count,price_from,price_to,category:categories(name,image)";
 
 function unwrap({ data, error, count }) {
   if (error) throw new Error(error.message || "Daten konnten nicht geladen werden.");
@@ -138,7 +139,7 @@ export async function loadProducts({ page = 0, categoryId = null, search = "", f
   if (featured) query = query.eq("featured", true);
 
   const term = sanitizeSearch(search);
-  if (term) query = query.or(`name.ilike.*${term}*,brand.ilike.*${term}*,barcode.ilike.${term}*`);
+  if (term) query = query.or(`search_text.ilike.*${term}*,barcode.ilike.${term}*`);
 
   const from = page * limit;
   const result = await query
